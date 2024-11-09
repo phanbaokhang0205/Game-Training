@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice</title>
+</head>
+<body>
+    
+    <script>
+        'use strict'
+        let canvas;
+        let context;
+        let width = 300;
+        let height = 200;
+        
+
+        window.onload = init;
+        let color;
+        function draw() {
+
+            const grd = context.createLinearGradient(0, 0, canvas.width, 0);
+            grd.addColorStop(0, "black");
+            grd.addColorStop("0.3", "magenta");
+            grd.addColorStop("0.5", "blue");
+            grd.addColorStop("0.6", "green");
+            grd.addColorStop("0.8", "yellow");
+            grd.addColorStop(1, "red");
+
+            context.fillStyle = grd;
+            context.fillRect(0, 0,canvas.width,canvas.height);
+            
+            context.arc(width, height, 50, 0, 2 * Math.PI);
+            context.fillStyle = color;
+            context.stroke();
+            context.fill();
+
+        }
+        
+        function changeColor() {
+            color = Math.random() > 0.5 ? "lightblue" : "lightgreen";
+            draw();
+        }
+        
+        
+        function init() { 
+            // Get a reference to the canvas
+            canvas = document.getElementById("canvas");
+            context = canvas.getContext("2d");
+            
+            canvas.addEventListener('click', changeColor);
+        
+            draw();
+        }
+
+    </script>
+</body>
+<canvas id="canvas" width="800" height="600" style="border: 1px solid blue"   >
+    Your browser does not support the HTML5 canvas tag.
+</canvas>
+</html>

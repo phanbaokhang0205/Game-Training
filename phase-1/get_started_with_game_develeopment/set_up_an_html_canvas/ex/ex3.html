@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice</title>
+</head>
+<body>
+    
+    <script>
+        'use strict'
+        let canvas;
+        let context;
+        let width = 30;
+        let height = 200;
+        
+
+        window.onload = init;
+
+        function draw() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.beginPath();
+            context.arc(width, height, 50, 0, 2 * Math.PI);
+            context.stroke();
+            context.fill();
+
+            width +=1;
+            if(width > canvas.width) {
+                width=30;
+            }
+
+            requestAnimationFrame(draw);
+            
+        }
+
+        
+        
+
+        function init() { 
+            // Get a reference to the canvas
+            canvas = document.getElementById("canvas");
+            context = canvas.getContext("2d");
+
+            draw();
+        }
+
+    </script>
+</body>
+<canvas id="canvas" width="800" height="600" style="border: 1px solid blue">
+    Your browser does not support the HTML5 canvas tag.
+</canvas>
+</html>
