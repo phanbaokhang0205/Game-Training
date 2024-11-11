@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Practice</title>
+</head>
+
+<body>
+    <script>
+        "use strict";
+        let canvas;
+        let context;
+        let secondsPassed = 0;
+        let oldTimeStamp = 0;
+        let movingSpeed = 10;
+
+        let degX1 = 0;
+        let degY1 = 0;
+
+        let degX2 = 0;
+        let degY2 = 0;
+        let radius = 200;
+
+        let rectX1 = Math.cos((degX1 * Math.PI) / 12) * radius;
+        let rectY1 = Math.sin((degY1 * Math.PI) / 12) * radius;
+
+        let rectX2 = Math.cos((degX2 * Math.PI) / 12) * radius;
+        let rectY2 = Math.sin((degY2 * Math.PI) / 12) * radius;
+        window.onload = init;
+
+        function gameLoop(timeStamp) {
+            // Calculate how much time has passed
+            secondsPassed = (timeStamp - oldTimeStamp) / 1000;
+            // Move forward in time with a maximum amount
+            secondsPassed = Math.min(secondsPassed, 0.1);
+            oldTimeStamp = timeStamp;
+
+            console.log(secondsPassed);
+            // Pass the time to the update
+            update(secondsPassed);
+            draw();
+
+            window.requestAnimationFrame(gameLoop);
+        }
+
+        function draw() {
+            // Clear the entire canvas
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Rect 1
+            context.fillStyle = "#ff8080";
+            context.fillRect(rectX1, rectY1, 150, 100);
+
+            context.fillStyle = "#ff9000";
+            context.fillRect(rectX2,rectY1,150,100);
+
+            // draw circle
+            context.arc(250, 250, radius, 0, Math.PI * 2);
+            context.strokeStyle = "lightgray";
+            context.stroke();
+        }
+
+        // function update(secondsPassed) {
+        //     // Use time to calculate new position
+        //     degX1 += movingSpeed * secondsPassed;
+        //     degY1 += movingSpeed * secondsPassed;
+        //     rectX1 = 250 + Math.cos((degX1 * Math.PI) / 12) * radius;
+        //     rectY1 = 250 + Math.sin((degY1 * Math.PI) / 12) * radius;
+
+        //     degX2 -= movingSpeed * secondsPassed;
+        //     degY2 -= movingSpeed * secondsPassed;
+        //     rectX2 = 250 + Math.cos((degX2 * Math.PI) / 12) * radius;
+        //     rectY2 = 250 + Math.sin((degY2 * Math.PI) / 12) * radius;
+        // }
+
+        function init() {
+            // Get a reference to the canvas
+            canvas = document.getElementById("canvas");
+            context = canvas.getContext("2d");
+            draw();
+            // window.requestAnimationFrame(gameLoop);
+        }
+    </script>
+</body>
+<canvas id="canvas" width="800" height="600" style="border: 1px solid blue">
+    Your browser does not support the HTML5 canvas tag.
+</canvas>
+
+</html>
