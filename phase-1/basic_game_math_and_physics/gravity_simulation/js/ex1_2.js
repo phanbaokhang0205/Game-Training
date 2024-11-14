@@ -99,9 +99,13 @@ function checkCollision(remoteBall, balls) {
         remoteBall.velocity.x *= 0.7; // 0.7 to lose energy each bounce
         remoteBall.position.y = canvasH - remoteBall.radius; // Keep the remoteBall above the floor
     
-    } else if (remoteBall.position.x + remoteBall.radius > canvasW) {
+    } 
+    
+    if (remoteBall.position.x + remoteBall.radius > canvasW) {
         remoteBall.position.x = canvasW - remoteBall.radius; // Keep the remoteBall above the floor
-    } else if (remoteBall.position.x < 0 + remoteBall.radius) {
+    } 
+    
+    if (remoteBall.position.x < 0 + remoteBall.radius) {
         remoteBall.position.x = 0 + remoteBall.radius;
     }
 
