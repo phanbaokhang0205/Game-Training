@@ -1,3 +1,7 @@
+import { Square } from "./squareClass.js";
+import { Circle } from "./circleClass.js";
+
+
 let gameObjects;
 let secondsPassed = 0;
 let oldTimeStamp = 0;
@@ -5,9 +9,8 @@ let canvas;
 let context;
 let canvasW;
 let canvasH;
-import { Square } from "./squareClass.js";
-import { Circle } from "./circleClass.js";
 
+// Set a restitution, a lower value will lose more energy when colliding
 
 window.onload = init;
 
@@ -43,7 +46,9 @@ function circleIntersect(x1, y1, r1, x2, y2, r2) {
 function detectCollisions(){
     let obj1;
     let obj2;
-
+    
+    // 
+    
     // Reset collision state of all objects
     for (let i = 0; i < gameObjects.length; i++) {
         gameObjects[i].isColliding = false;
@@ -62,18 +67,59 @@ function detectCollisions(){
             //     obj1.isColliding = true;
             //     obj2.isColliding = true;
             // }
+            let vCollision = {x: obj2.x - obj1.x, y: obj2.y - obj1.y};
+            let distance = Math.sqrt((obj2.x-obj1.x)*(obj2.x-obj1.x) + (obj2.y-obj1.y)*(obj2.y-obj1.y));
+            let vCollisionNorm = {x: vCollision.x / distance, y: vCollision.y / distance};
+            let vRelativeVelocity = {x: obj1.vx - obj2.vx, y: obj1.vy - obj2.vy};
+            let speed = vRelativeVelocity.x * vCollisionNorm.x + vRelativeVelocity.y * vCollisionNorm.y;
+
+            // Apply restitution to the speed
+            speed *= Math.min(obj1.restitution, obj2.restitution);
+
             if (circleIntersect(obj1.x, obj1.y, obj1.radius, obj2.x, obj2.y, obj2.radius)){
                 obj1.isColliding = true;
                 obj2.isColliding = true;
-                obj1.vx = -obj1.vx;
-                obj1.vy = -obj1.vy;
-                obj2.vx = -obj2.vx;
-                obj2.vy = -obj2.vy;
+                if (speed < 0) {
+                    break;
+                }
+
+                let impulse = 2 * speed / (obj1.mass + obj2.mass);
+                obj1.vx -= (impulse * obj2.mass * vCollisionNorm.x);
+                obj1.vy -= (impulse * obj2.mass * vCollisionNorm.y);
+                obj2.vx += (impulse * obj1.mass * vCollisionNorm.x);
+                obj2.vy += (impulse * obj1.mass * vCollisionNorm.y);
+
             }
         }
     }
 }
 
+function detectEdgeCollisions()
+ {
+     let obj;
+     for (let i = 0; i < gameObjects.length; i++)
+     {
+         obj = gameObjects[i];
+
+         // Check for left and right
+         if (obj.x < obj.radius){
+             obj.vx = Math.abs(obj.vx) * obj.restitution;
+             obj.x = obj.radius;
+         }else if (obj.x > canvasW - obj.radius){
+             obj.vx = -Math.abs(obj.vx) * obj.restitution;
+             obj.x = canvasW - obj.radius;
+         }
+
+         // Check for bottom and top
+         if (obj.y < obj.radius){
+             obj.vy = Math.abs(obj.vy) * obj.restitution;
+             obj.y = obj.radius;
+         } else if (obj.y > canvasH - obj.radius){
+             obj.vy = -Math.abs(obj.vy) * obj.restitution;
+             obj.y = canvasH - obj.radius;
+         }
+     }
+}
 
 function createWorld(){
     gameObjects = [
@@ -83,11 +129,14 @@ function createWorld(){
         // new Square(context, 250, 150, 50, 50),
         // new Square(context, 350, 75, -50, 50),
         // new Square(context, 300, 300, 50, -50)
-        new Circle(context, 250, 50, 0, 50, 35),
-        new Circle(context, 250, 300, 0, -50, 35),
-        new Circle(context, 150, 0, 50, 50, 35),
-        new Circle(context, 250, 450, 0, -50, 35),
-        new Circle(context, 350, 70, -50, 50, 35),
+        new Circle(context, 250, 50, 0, 10, 35, 35),
+        new Circle(context, 250, 300, 0, -10, 1, 10),
+        new Circle(context, 150, 0, 50, 10, 1, 10),
+        new Circle(context, 250, 450, 0, -10, 35, 35),
+        new Circle(context, 350, 70, -50, 10, 1, 10),
+        new Circle(context, 370, 70, -50, 10, 1, 10),
+        new Circle(context, 380, 80, -50, 10, 1, 10),
+        new Circle(context, 390, 90, -50, 20, 1, 10),
 
     ];
 }
@@ -103,7 +152,7 @@ function gameLoop(timeStamp)
     }
     
     detectCollisions();
-
+    detectEdgeCollisions();
     clearCanvas();
 
     // Do the same to draw
