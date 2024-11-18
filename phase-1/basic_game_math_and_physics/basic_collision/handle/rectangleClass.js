@@ -2,12 +2,13 @@ import { GameObject } from "./gameObject.js";
 
 export class Rectangle extends GameObject
 {
-    constructor (context, x, y, vx, vy){
+    constructor (context, x, y, vx, vy, mass){
         super(context, x, y, vx, vy);
 
         // Set default width and height
         this.width = 70;
         this.height = 50;
+        this.mass = mass;
     }
 
     draw(){

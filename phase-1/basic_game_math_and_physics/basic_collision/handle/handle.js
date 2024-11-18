@@ -88,6 +88,7 @@ function detectCollisions(){
                 obj1.vy -= (impulse * obj2.mass * vCollisionNorm.y);
                 obj2.vx += (impulse * obj1.mass * vCollisionNorm.x);
                 obj2.vy += (impulse * obj1.mass * vCollisionNorm.y);
+                
 
             }
         }
