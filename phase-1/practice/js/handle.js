@@ -1,5 +1,3 @@
-
-
 class GameObject {
     constructor(context, x, y, vx, vy, mass) {
         this.context = context;
@@ -79,6 +77,8 @@ class Circle extends GameObject {
 
         return squareDistance <= ((r1 + r2) * (r1 + r2))
     }
+
+
 }
 
 let gameObject;
@@ -160,7 +160,6 @@ function detectEdgeCollisions() {
         }
     }
 }
-
 
 function detectCollision() {
     let obj1;

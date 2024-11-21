@@ -6,12 +6,14 @@
     <title>Document</title>
     <style>
         /* Đặt body và html chiếm toàn bộ chiều cao */
-        html, body {
+        .canvasBox {
             margin: 0;
             height: 100%;
             display: flex;
             justify-content: center; /* Căn giữa theo chiều ngang */
             align-items: center;    /* Căn giữa theo chiều dọc */
+        }
+        body {
             background-color: #f0f0f0; /* Màu nền tùy ý */
         }
 
@@ -22,7 +24,11 @@
     </style>
 </head>
 <body>
-    <canvas id="canvas" width="800" height="600"></canvas>
-    <script src="handle.js"></script>
+    <div class="canvasBox">
+        <canvas id="canvas" width="800" height="600"></canvas>
+
+    </div>
+    <p id="info"></p>
+    <script src="../js/ex3.js"></script>
 </body>
 </html>
