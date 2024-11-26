@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* Đặt body và html chiếm toàn bộ chiều cao */
+        .canvasBox {
+            margin: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center; /* Căn giữa theo chiều ngang */
+            align-items: center;    /* Căn giữa theo chiều dọc */
+        }
+        body {
+            background-color: #f0f0f0; /* Màu nền tùy ý */
+        }
+
+        /* Canvas */
+        canvas {
+            border: 1px solid blue;
+        }
+    </style>
+</head>
+<body>
+    <div class="canvasBox">
+        <canvas id="canvas" width="800" height="600"></canvas>
+    </div>
+    <ul>
+        <li>Nhấn lên để tăng tốc theo chiều kim đồng hồ</li>
+        <li>Nhấn xuống để tăng tốc ngược chiều kim đồng hồ</li>
+    </ul>
+    <script src="index.js"></script>
+</body>
+</html>
