@@ -54,6 +54,10 @@ function animateSquare(time) {
 
     // Continue animation until `t` reaches 1
     if (t < 1) requestAnimationFrame(animateSquare);
+    else {
+        animation.startTime = null
+        requestAnimationFrame(animateSquare);
+    }
 }
 
 function drawSquare({ position, size, color }) {
