@@ -16,26 +16,20 @@ function update(mouseX, mouseY) {
     let dx = mouseX - ship.x;
     let dy = mouseY - ship.y;
     ship.angle = Math.atan2(dy, dx);
-    moveControl(ship)
 }
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     ctx.save();
-
-    ctx.translate(ship.x + ship.image.width / 2, ship.y + ship.image.height / 2);
+    ctx.translate(ship.x, ship.y);
     ctx.rotate(ship.angle);
-
-    ctx.translate(-ship.image.width / 2, ship.image.height / 2);
-    ctx.drawImage(ship.image, 0, 0);
-
+    ctx.drawImage(ship.image, -ship.image.width/2, -ship.image.height/2);
     ctx.restore();
 }
 
 canvas.addEventListener('mousemove', (e) => {
     update(e.offsetX, e.offsetY);
-    draw();
 
 });
 let keys = {}
@@ -65,6 +59,10 @@ function moveControl(ship) {
 }
 
 function gameLoop() {
+    moveControl(ship)
+
+    draw()
+
     window.requestAnimationFrame(gameLoop)
 }
 
