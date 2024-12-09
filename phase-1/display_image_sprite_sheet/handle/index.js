@@ -1,5 +1,6 @@
 let canvas;
 let context;
+let gameObject=[];
 let cw;
 let ch;
 
@@ -109,18 +110,16 @@ class Circle extends GameObject {
         this.context.translate(-this.x, -this.y);
         // Draw the image
         this.context.drawImage(
-            Circle.sprite, 
-            column * Circle.frameWidth, 
-            row * Circle.frameHeight, 
-            Circle.frameWidth, 
-            Circle.frameHeight, 
-            (this.x - this.radius), 
-            // (this.y - this.radius) - this.radius * 0.4, 
-            this.y - this.radius,
-            this.radius * 2, 
-            // this.radius * 2.42
-            this.radius * 2
-        );
+            Circle.sprite,
+            column * Circle.frameWidth,
+            row * Circle.frameHeight,
+            Circle.frameWidth,
+            Circle.frameHeight,
+            this.x - this.radius,
+            this.y - this.radius - this.radius * 0.4,
+            this.radius * 2,
+            this.radius * 2.42
+          );
 
         // Reset transformation matrix
         this.context.setTransform(1, 0, 0, 1, 0, 0);
@@ -128,8 +127,8 @@ class Circle extends GameObject {
         // Draw hitbox
         this.context.beginPath();
         this.context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-        this.context.fillStyle = 'transparent'
-        this.context.fill();
+        this.context.strokeStyle = 'red'
+        this.context.stroke();
     }
 
     handleCollision() {
@@ -149,4 +148,52 @@ class Circle extends GameObject {
         if (this.x - this.radius < 0 || this.x + this.radius > cw) this.vx *= -1;
         if (this.y - this.radius < 0 || this.y + this.radius > ch) this.vy *= -1;
     }
+}
+
+function detectCollision() {
+    for (let i = 0; i < gameObjects.length; i++) {
+      gameObjects[i].isColliding = false;
+    }
+  
+    for (let i = 0; i < gameObjects.length; i++) {
+      let obj1 = gameObjects[i];
+      for (let j = i + 1; j < gameObjects.length; j++) {
+        let obj2 = gameObjects[j];
+  
+        if (circleIntersect(obj1, obj2)) {
+          obj1.isColliding = true;
+          obj2.isColliding = true;
+          handleCollision(obj1, obj2);
+        }
+      }
+    }
+}
+
+function circleIntersect(cir1, cir2) {
+    let squareDistance =
+      (cir1.x - cir2.x) * (cir1.x - cir2.x) +
+      (cir1.y - cir2.y) * (cir1.y - cir2.y);
+  
+    return (
+      squareDistance <= (cir1.radius + cir2.radius) * (cir1.radius + cir2.radius)
+    );
+}
+
+function handleCollision(obj1, obj2) {
+    let vCollision = { x: obj2.x - obj1.x, y: obj2.y - obj1.y };
+    let distance = Math.sqrt(vCollision.x * vCollision.x + vCollision.y * vCollision.y);
+    let vCollisionNorm = { x: vCollision.x / distance, y: vCollision.y / distance };
+    let vRelativeVelocity = { x: obj1.vx - obj2.vx, y: obj1.vy - obj2.vy };
+    let speed =
+      vRelativeVelocity.x * vCollisionNorm.x +
+      vRelativeVelocity.y * vCollisionNorm.y;
+  
+    if (speed < 0) return;
+  
+    let impulse = (2 * speed) / (obj1.mass + obj2.mass);
+  
+    obj1.vx -= impulse * obj2.mass * vCollisionNorm.x;
+    obj1.vy -= impulse * obj2.mass * vCollisionNorm.y;
+    obj2.vx += impulse * obj1.mass * vCollisionNorm.x;
+    obj2.vy += impulse * obj1.mass * vCollisionNorm.y;
 }

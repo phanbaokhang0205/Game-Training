@@ -15,7 +15,7 @@ function update(mouseX, mouseY) {
     // Calculate angle between ship and mouse
     let dx = mouseX - ship.x;
     let dy = mouseY - ship.y;
-    ship.angle = Math.atan2(dy, dx);
+    ship.angle = Math.atan2(dy, dx) + Math.PI/2;
 }
 
 function draw() {
