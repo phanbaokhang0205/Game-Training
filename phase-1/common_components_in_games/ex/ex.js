@@ -1,13 +1,21 @@
 import { GameManager } from "../handle/GameManager.js";
 import { InputController } from "../handle/InputController.js";
 import { AudioManager } from "../handle/AudioManager.js";
-import { RectCollider } from "../handle/RectCollider.js";
-import { CollisionManager } from "../handle/CollisionManager.js";
+import { Collider } from '../handle/Collider.js';
+// import { CircleCollider } from "../handle/CircleCollider.js";
+// import { CollisionManager } from "../handle/CollisionManager.js";
 
-class Player {
-    constructor(context, inputController) {
-        this.x = cw / 2;
-        this.y = ch-50;
+class Player extends Collider {
+    static numColumns = 3;
+    static numRows = 1;
+    static frameWidth = 0;
+    static frameHeight = 0;
+    static sprite;
+    
+    constructor(context, inputController, x = cw / 2, y = ch - 50) {
+        super(x, y);
+        this.x = x;
+        this.y = y;
         this.width = 120;
         this.height = 100;
         this.speed = 3;
@@ -16,6 +24,19 @@ class Player {
         this.inputController = inputController;
 
         this.loadImage();
+    }
+    
+
+    checkCollision(other) {
+        if (other instanceof Collider) {
+            return (
+                this.x < other.x + other.width &&
+                this.x + this.width > other.x &&
+                this.y < other.y + other.height &&
+                this.y + this.height > other.y
+            );
+        }
+        return false;
     }
 
     loadImage() {
@@ -40,7 +61,7 @@ class Player {
         this.context.drawImage(this.image, -this.width / 2, -this.height / 2, this.width, this.height);
         this.context.restore();
 
-        this.drawHitBox()
+        // this.drawHitBox()
     }
 
     drawHitBox() {
@@ -67,17 +88,29 @@ class Player {
     }
 }
 
-class Star {
+class Star extends Collider {
     constructor(context, x, y) {
-        this.x = x;
-        this.y = y;
+        super(x, y)
         this.speed = 1.2;
         this.width = 60;
         this.height = 60;
+        this.visible = true;
         this.image = new Image();
         this.context = context
 
         this.loadImage();
+    }
+
+    checkCollision(other) {
+        if (other instanceof Collider) {
+            return (
+                this.x < other.x + other.width &&
+                this.x + this.width > other.x &&
+                this.y < other.y + other.height &&
+                this.y + this.height > other.y
+            );
+        }
+        return false;
     }
 
     loadImage() {
@@ -96,6 +129,7 @@ class Star {
             return;
         }
 
+        if (!this.visible) return;
         // draw image
         this.context.save();
         this.context.translate(this.x, this.y);
@@ -104,7 +138,7 @@ class Star {
         this.context.restore();
 
         // draw hitbox
-        this.drawHitBox();
+        // this.drawHitBox();
     }
 
     drawHitBox() {
@@ -136,9 +170,20 @@ let gameManager;
 let mario;
 let stars;
 let inputController;
+
+// audio
+let get_star;
+let game_over;
+
+// status game
+let lives = 3;
+
+// reset button
+let reset_btn;
+
 window.onload = init
 
-// Random vị trí X của star
+// Random vị trí X , Y của star
 function randPosition(max, min) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
@@ -148,18 +193,25 @@ function init() {
     context = canvas.getContext('2d')
     cw = canvas.width
     ch = canvas.height
+
+    // status game
     gameManager = new GameManager()
+
+    // Input controller
     inputController = new InputController()
+    // Player
     mario = new Player(context, inputController)
-    stars = [
-        new Star(context, randPosition(cw - 50, 50), randPosition(0, -1000)),
-        new Star(context, randPosition(cw - 50, 50), randPosition(0, -1000)),
-        new Star(context, randPosition(cw - 50, 50), randPosition(0, -1000)),
-        new Star(context, randPosition(cw - 50, 50), randPosition(0, -1000)),
-        new Star(context, randPosition(cw - 50, 50), randPosition(0, -1000)),
-        new Star(context, randPosition(cw - 50, 50), randPosition(0, -1000)),
-        new Star(context, randPosition(cw - 50, 50), randPosition(0, -1000)),
-    ]
+    // star
+    stars = Array.from({ length: 7 }, () => new Star(context, randPosition(cw - 50, 50), randPosition(0, -1000)));
+
+    // Audio
+    get_star = new AudioManager();
+    game_over = new AudioManager();
+    game_over.loadSound('gameOver', '../audio/game_over.mp3');
+    
+    // reset_btn
+    reset_btn = document.getElementById("resetButton")
+    reset_btn.addEventListener('click', resetGame);
 
     requestAnimationFrame(gameLoop)
 }
@@ -167,11 +219,35 @@ function init() {
 
 function gameLoop() {
 
-    update(stars)
+    if (gameManager.state == 'playing') {
+        reset_btn.style.display = 'none';
+        update(stars)
+        detecteCollision(stars, mario)
+        draw(stars, gameManager.score, lives)
+        requestAnimationFrame(gameLoop)
+    }
 
-    draw(stars)
+    if (gameManager.state == 'pause') {
+        game_over.playSound('gameOver');
+        reset_btn.style.display = 'block';
+    }
 
-    requestAnimationFrame(gameLoop)
+}
+
+
+function resetGame() {
+    // Khởi tạo lại trạng thái game
+    gameManager.resetGame()
+    lives = 3;
+
+    // tạo lại star
+    stars = Array.from({ length: 7 }, () => new Star(context, randPosition(cw - 50, 50), randPosition(0, -1000)));
+    
+    // đặt player lại vị trí ban đầu
+    mario.x = cw / 2;
+    mario.y = ch - 50
+    
+    requestAnimationFrame(gameLoop); 
 }
 
 function update(stars) {
@@ -182,9 +258,45 @@ function update(stars) {
     });
 }
 
-function draw(stars) {
+function draw(stars, s, l) {
     mario.draw()
     stars.forEach(obj => {
         obj.draw()
     });
+    drawHUD(s, l)
+
+}
+
+function detecteCollision(stars, player) {
+    stars.forEach(s => {
+        // Hàm kiểm tra va chạm star-mario
+        if (s.visible && s.checkCollision(player)) {
+            s.visible = false;
+            gameManager.updateScore(1)
+            get_star.loadSound('getStar', '../audio/get_star.mp3');
+            get_star.playSound('getStar'); 
+        }
+        
+        
+        // Hàm kiểm tra va chạm star và mặt đất
+        if (s.visible && s.y - s.height > ch) {
+            s.visible = false
+            lives--;
+        }
+
+        if (lives === 0) {
+            gameManager.state = 'pause'
+        }
+        
+    });
+
+    
+}
+
+
+function drawHUD(score, lives) {
+    context.fillStyle = 'black';
+    context.font = '20px Arial';
+    context.fillText(`Score: ${score}`, 10, 20);
+    context.fillText(`Lives: ${lives}`, 10, 40);
 }

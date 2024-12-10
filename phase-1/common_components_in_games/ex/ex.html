@@ -1,20 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        #resetButton {
+            display: none;
+            position: absolute;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            z-index: 1;
+            /* Đảm bảo nút nằm trên canvas */
+        }
+
+        #resetButton:hover {
+            background-color: #d32f2f;
+        }
+
         /* Đặt body và html chiếm toàn bộ chiều cao */
         .canvasBox {
             margin: 0;
             height: 100%;
             display: flex;
-            justify-content: center; /* Căn giữa theo chiều ngang */
-            align-items: center;    /* Căn giữa theo chiều dọc */
+            justify-content: center;
+            /* Căn giữa theo chiều ngang */
+            align-items: center;
+            /* Căn giữa theo chiều dọc */
         }
+
         body {
-            background-color: #ffff; /* Màu nền tùy ý */
+            background-color: #ffff;
+            /* Màu nền tùy ý */
         }
 
         /* Canvas */
@@ -23,11 +46,13 @@
         }
     </style>
 </head>
+
 <body>
     <div class="canvasBox">
-        <canvas id="canvas" width="800" height="600">
-        </canvas>
+        <canvas id="canvas" width="800" height="600"></canvas>
+        <button id="resetButton">Restart</button>
     </div>
     <script type="module" src="ex.js"></script>
 </body>
+
 </html>
