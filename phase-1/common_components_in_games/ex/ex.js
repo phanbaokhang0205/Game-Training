@@ -89,9 +89,9 @@ class Player extends Collider {
 }
 
 class Star extends Collider {
-    constructor(context, x, y) {
+    constructor(context, x, y, speed = 1.5) {
         super(x, y)
-        this.speed = 1.2;
+        this.speed = speed;
         this.width = 60;
         this.height = 60;
         this.visible = true;
@@ -181,6 +181,11 @@ let lives = 3;
 // reset button
 let reset_btn;
 
+// let starSpawnTimer = 0;
+// const SPAWN_INTERVAL_SLOW = 2000; // 2 giây khi điểm < 5
+// const SPAWN_INTERVAL_FAST = 1000; // 1 giây khi điểm >= 5
+let lastSpawnTime = 0;
+
 window.onload = init
 
 // Random vị trí X , Y của star
@@ -216,11 +221,43 @@ function init() {
     requestAnimationFrame(gameLoop)
 }
 
+function getStarSpeed(score) {
+    if (score >= 20) return 2.5;
+    if (score >= 5) return 2;
+    return 1.5;
+}
 
-function gameLoop() {
+function getSpawnInterval(score) {
+    if (score >= 20) return 800;  // 0.8 giây khi điểm >= 20
+    if (score >= 5) return 1000;  // 1 giây khi điểm >= 5
+    return 2000;                  // 2 giây khi điểm < 5
+}
+
+
+function gameLoop(timestamp) {
 
     if (gameManager.state == 'playing') {
         reset_btn.style.display = 'none';
+        
+        // Logic sinh sao mới
+        if (!lastSpawnTime) lastSpawnTime = timestamp;
+        const deltaTime = timestamp - lastSpawnTime;
+        
+        // Xác định khoảng thời gian sinh sao dựa trên điểm số
+        const spawnInterval = getSpawnInterval(gameManager.score);
+        
+        if (deltaTime >= spawnInterval) {
+            // Tạo sao mới với tốc độ phù hợp
+            const starSpeed = getStarSpeed(gameManager.score);
+            const newStar = new Star(context, randPosition(cw - 50, 50), randPosition(-100, -50), starSpeed);
+            stars.push(newStar);
+            
+            // Giới hạn số lượng sao trên màn hình
+            stars = stars.filter(star => star.visible && star.y <= ch);
+            
+            lastSpawnTime = timestamp;
+        }
+        
         update(stars)
         detecteCollision(stars, mario)
         draw(stars, gameManager.score, lives)
@@ -241,11 +278,13 @@ function resetGame() {
     lives = 3;
 
     // tạo lại star
-    stars = Array.from({ length: 7 }, () => new Star(context, randPosition(cw - 50, 50), randPosition(0, -1000)));
+    stars = Array.from({ length: 3 }, () => new Star(context, randPosition(cw - 50, 50), randPosition(-100, -50), 1.5));
     
     // đặt player lại vị trí ban đầu
     mario.x = cw / 2;
     mario.y = ch - 50
+
+    lastSpawnTime = 0; // Reset thời gian sinh sao
     
     requestAnimationFrame(gameLoop); 
 }
@@ -279,7 +318,7 @@ function detecteCollision(stars, player) {
         
         
         // Hàm kiểm tra va chạm star và mặt đất
-        if (s.visible && s.y - s.height > ch) {
+        if (s.visible && s.y - s.height/2 > ch) {
             s.visible = false
             lives--;
         }

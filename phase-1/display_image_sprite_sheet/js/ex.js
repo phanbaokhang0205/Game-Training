@@ -30,7 +30,6 @@ function draw() {
 
 canvas.addEventListener('mousemove', (e) => {
     update(e.offsetX, e.offsetY);
-
 });
 let keys = {}
 window.addEventListener('keydown', (event) => {

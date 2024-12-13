@@ -12,10 +12,6 @@ function init() {
     window.requestAnimationFrame(gameLoop)
 }
 
-function subtractVectors(v1, v2) {
-    return { x: v1.x - v2.x, y: v2.y - v2.y };
-}
-
 function getDegrees(r, mx, my) {
     let dx = mx - r.position.x
     let dy = my - r.position.y
@@ -24,7 +20,7 @@ function getDegrees(r, mx, my) {
     return angleRadians
 }
 
-const rectangle = {
+const ship = {
     position: { x: 400, y: 300 },
     width: 200,
     height: 50,
@@ -38,6 +34,8 @@ function update(r) {
         let mouseY = e.offsetY
         let dg = getDegrees(r, mouseX, mouseY)
         r.rotation = dg
+        r.position.x = e.offsetX
+        r.position.y = e.offsetY
     })
 }
 
