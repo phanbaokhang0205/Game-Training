@@ -18,11 +18,7 @@ ship.image.src = '../img/ship_2.jpg';
 bullet.image.src = '../img/bullet_blue.png'
 
 function update() {
-    canvas.addEventListener('click', () => {
-        bullet.x = bullet.x
-        console.log(bullet.x);
-        shoot()
-    })
+    
 }
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -63,3 +59,9 @@ function gameLoop() {
 }
 
 gameLoop()
+
+canvas.addEventListener('click', () => {
+    bullet.x = bullet.x
+    console.log(bullet.x);
+    shoot()
+})

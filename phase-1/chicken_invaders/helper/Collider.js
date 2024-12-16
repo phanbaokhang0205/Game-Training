@@ -5,7 +5,15 @@ export class Collider {
     }
 
     checkCollision(other) {
-        throw new Error("checkCollision() must be implemented in a subclass");
+        if (other instanceof Collider) {
+            return (
+                this.x < other.x + other.image.width &&
+                this.x + this.image.width > other.x &&
+                this.y < other.y + other.image.height &&
+                this.y + this.image.height > other.y
+            );
+        }
+        return false;
     }
 
     onCollision(other) {
