@@ -1,16 +1,14 @@
 import { GameManager } from "../helper/GameManager.js";
 import { AudioManager } from "../helper/AudioManager.js";
-import { Collider } from '../helper/Collider.js';
 import { Player } from "../model/Player.js";
-import { Computer } from "../model/Computer.js";
-
+import { Enemy } from "../model/Enemy.js";
 let canvas;
 let context;
 let cw;
 let ch;
 let gameManager;
 let ship;
-let enemy;
+let enemies = [];
 // let bullets;
 
 // audio
@@ -31,10 +29,10 @@ function init() {
 
     // Player
     ship = new Player(context, canvas, cw / 2, ch - 40)
-    console.log(ship.checkCollision());
-    // Enemy
-    enemy = new Computer(context, cw / 2, 100)
 
+    // Enemy
+    // enemy = new Enemy(context, cw / 2, 100)
+    renderEnemies()
     // Chicken
 
 
@@ -47,13 +45,31 @@ function init() {
     requestAnimationFrame(gameLoop)
 }
 function update() {
-    ship.update()
-    ship.detectCollision(enemy)
+    enemies.forEach(enemy => {
+        ship.update(enemy)
+    })
 }
-
 function draw() {
     ship.draw()
-    enemy.draw()
+    
+    enemies.forEach(enemy => {
+        // update score when hit the enemy
+        if (ship.collidingBullet_Enemy(enemy)) {
+            gameManager.updateScore(1)
+        }
+        // update color when collide with enemy
+        if (!ship.collidingShip_Enemy(enemy)) {
+            enemy.color = 'black'
+            enemy.draw()
+            
+        }
+        else if (ship.collidingShip_Enemy(enemy)){
+            enemy.color = 'white'
+            enemy.draw()
+        }
+    })
+    drawHUD(gameManager.score, 3)
+
 }
 function gameLoop() {
     context.clearRect(0, 0, cw, ch)
@@ -64,21 +80,26 @@ function gameLoop() {
     window.requestAnimationFrame(gameLoop)
 }
 
+function renderEnemies() {
+    let col = 8; // Số cột
+    let row = 2; // Số hàng
+    let spacingX = 100; // Khoảng cách giữa các cột (trục X)
+    let spacingY = 100; // Khoảng cách giữa các hàng (trục Y)
+
+    for (let i = 0; i < row; i++) {
+        for (let j = 0; j < col; j++) {
+            const enemy = new Enemy(context, j * spacingX + 50, i * spacingY + 100);
+            enemies.push(enemy);
+        }
+    }
+}
 
 
-// function test() {
-//     let col = 5; // Số cột
-//     let row = 3; // Số hàng
-//     let result = "";
 
-//     for (let i = 0; i < row; i++) {
-//         for (let j = 0; j < col; j++) {
-//             result += "*";
-//         }
-//         result += "\n"; // Xuống dòng sau mỗi hàng
-//     }
+function drawHUD(score, lives) {
+    context.fillStyle = 'white';
+    context.font = '20px Arial';
+    context.fillText(`Score: ${score}`, 10, 20);
+    context.fillText(`Lives: ${lives}`, 10, 40);
+}
 
-//     console.log(result);
-// }
-
-// test()

@@ -1,12 +1,14 @@
 import { Collider } from "../helper/Collider.js";
 
-export class Computer extends Collider{
+export class Enemy extends Collider{
     constructor(context, x, y) {
         super(x, y)
         this.context = context;
         this.x = x;
         this.y = y;
+        this.color = 'red'
         this.image = new Image;
+
         
         // load image
         this.loadImage();
@@ -15,6 +17,8 @@ export class Computer extends Collider{
     loadImage() {
         this.image.src = '../img/enemy_1.jpg';
         this.image.onload = () => {
+            this.width = this.image.width/10;
+            this.height = this.image.height/10;
             console.log("Ship image loaded successfully");
         };
         this.image.onerror = () => {
@@ -35,7 +39,7 @@ export class Computer extends Collider{
     
     drawHitBox() {
         this.context.beginPath();
-        this.context.strokeStyle = 'red';
+        this.context.strokeStyle = this.color;
         this.context.strokeRect(
             this.x - this.image.width / 20,
             this.y - this.image.height / 20,

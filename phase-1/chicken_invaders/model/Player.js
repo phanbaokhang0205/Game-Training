@@ -1,7 +1,8 @@
 import { Collider } from "../helper/Collider.js";
 import { Bullet } from "./Bullet.js";
+import { AudioManager } from "../helper/AudioManager.js";
 
-export class Player extends Collider{
+export class Player extends Collider {
     constructor(context, canvas, x, y) {
         super(x, y);
         this.x = x;
@@ -10,7 +11,12 @@ export class Player extends Collider{
         this.canvas = canvas;
         this.image = new Image()
         
+        // audio
+        this.au_shooting = new AudioManager()
+        this.au_hitEnemy = new AudioManager()
+
         this.bullets = []
+
         // load image
         this.loadImage()
 
@@ -19,14 +25,14 @@ export class Player extends Collider{
 
         // shoot
         this.shoot()
-
     }
 
-    // bullets = []
 
     loadImage() {
         this.image.src = '../img/ship_2.jpg';
         this.image.onload = () => {
+            this.width = this.image.width/8;
+            this.height = this.image.height/8;
             console.log("Ship image loaded successfully");
         };
         this.image.onerror = () => {
@@ -37,14 +43,20 @@ export class Player extends Collider{
     draw() {
         this.context.save();
         this.context.translate(this.x, this.y);
-        this.context.drawImage(this.image, -this.image.width/16, -this.image.height/16, this.image.width/8, this.image.height/8);
+        this.context.drawImage(this.image, -this.image.width / 16, -this.image.height / 16, this.image.width / 8, this.image.height / 8);
         this.context.restore();
 
         // draw bullets
-        this.bullets.forEach(bullet => bullet.draw());
+        this.bullets.forEach(bullet => {
+            if (bullet.visible) {
+                bullet.draw()
+            }
+            return
+        }
+        );
 
         // draw hitbox
-        this.drawHitBox();
+        // this.drawHitBox();
     }
 
     drawHitBox() {
@@ -59,9 +71,11 @@ export class Player extends Collider{
         this.context.stroke();
     }
 
-
-    update() {
-        this.bullets.forEach(bullet => bullet.update());
+    // check collision and update bullet
+    update(enemy) {
+        this.collidingBullet_Enemy(enemy)
+        this.collidingShip_Enemy(enemy)
+        this.bullets.forEach(bullet => bullet.update(enemy));
     }
 
     move() {
@@ -72,30 +86,36 @@ export class Player extends Collider{
     }
 
     shoot() {
-        this.canvas.addEventListener('click', ()=> {
+        this.canvas.addEventListener('click', () => {
             const bullet = new Bullet(this.context, this.x, this.y - 50);
             this.bullets.push(bullet)
-            bullet.x = this.x;
-            
-            console.log("shoot!!!!");
-            console.log(this.x);
-            console.log(this.y);
-            console.log("Bullet x: " + bullet.x);
-            console.log("Bullet y: " + bullet.y);
-            console.log(bullet.x);
-            console.log(bullet.checkCollision(this));
+            this.au_shooting.loadSound('shooting_4', '../audio/shooting_4.mp3')
+            this.au_shooting.playSound('shooting_4')
         })
     }
 
-    detectCollision(enemy) {
+    collidingBullet_Enemy(other) {
+        let isShot = false
+
         this.bullets.forEach(b => {
-            if (b.visible && b.checkCollision(enemy)) {
+            if (b.visible && b.checkCollision(other)) {
                 b.visible = false;
-                // get_star.loadSound('getStar', '../audio/get_star.mp3');
-                // get_star.playSound('getStar'); 
+                this.au_hitEnemy.loadSound('pipe_hit', '../audio/pipe_hit.mp3')
+                this.au_hitEnemy.playSound('pipe_hit')
+                isShot = true
             }
-
         })
+
+        return isShot
     }
+
+    collidingShip_Enemy(other) {
+        if (this.checkCollision(other)) {
+            console.log("Ship collided enemy.");
+            return true
+        }
+        return false
+    }
+
 }
 

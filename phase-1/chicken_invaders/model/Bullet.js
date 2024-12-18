@@ -4,9 +4,10 @@ export class Bullet extends Collider{
     constructor(context, x, y) {
         super(x, y)
         this.context = context;
+        this.canvas = this.context.canvas;
         this.x = x;
         this.y = y;
-        this.speed = 3;
+        this.speed = 0.5;
         this.image = new Image;
         this.visible = true;
 
@@ -16,6 +17,8 @@ export class Bullet extends Collider{
     loadImage() {
         this.image.src = '../img/blue_bullet.png';
         this.image.onload = () => {
+            this.width = this.image.width;
+            this.height = this.image.height;
             console.log("Bullet image loaded successfully");
         };
         this.image.onerror = () => {
@@ -26,14 +29,15 @@ export class Bullet extends Collider{
         console.log("Bullets hi.");
     }
 
+
     draw() {
-        // if (!this.visible) return;
+        if (!this.visible) return
 
         this.context.save();
         this.context.translate(this.x, this.y);
         this.context.drawImage(this.image, -this.image.width/2, -this.image.height/2, this.image.width, this.image.height);
         this.context.restore();
-        this.drawHitBox();
+        // this.drawHitBox();
     }
     
     drawHitBox() {
@@ -48,10 +52,9 @@ export class Bullet extends Collider{
         this.context.stroke();
     }
 
-    update() {
-        this.y -= this.speed
+    update(other) {
+        this.y -= this.speed;
+        this.checkCollision(other);
     }
-
-    
     
 }
