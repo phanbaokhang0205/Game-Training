@@ -20,7 +20,7 @@ export class Bullet extends Collider{
     }
 
     loadImage() {
-        this.image.src = `../img/bullet/bullet_${this.imageIndex}.png`;
+        this.image.src = `../img/Bullet/bullet_${this.imageIndex}.png`;
         this.image.onload = () => {
             // console.log("Bullet image loaded successfully");
         };
