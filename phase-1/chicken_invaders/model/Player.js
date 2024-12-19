@@ -11,6 +11,11 @@ export class Player extends Collider {
         this.canvas = canvas;
         this.image = new Image()
         
+        // sprite
+        this.imageIndex = 1; // Chỉ số ảnh ban đầu
+        this.width = 60;     // Chiều rộng cố định của ảnh ship
+        this.height = 100;   // Chiều cao cố định của ảnh ship
+
         // audio
         this.au_shooting = new AudioManager()
         this.au_hitEnemy = new AudioManager()
@@ -25,26 +30,52 @@ export class Player extends Collider {
 
         // shoot
         this.shoot()
+
+        // sprite bullet
+        // Thay đổi ảnh mỗi 2 giây
+        let bulletSprite = 1;
+        setInterval(() => {
+            bulletSprite = (bulletSprite % 6) + 1; // Lặp từ 1 đến 5
+            this.bullets.forEach(b => {
+                b.changeImage(bulletSprite);
+            })
+        }, 100);
+
+        
     }
 
 
     loadImage() {
-        this.image.src = '../img/ship_2.jpg';
+        // this.image.src = '../img/ship_2.jpg';
+        this.image.src = `../img/main_ship/ship_${this.imageIndex}.jpg`;
         this.image.onload = () => {
-            this.width = this.image.width/8;
-            this.height = this.image.height/8;
-            console.log("Ship image loaded successfully");
+            // console.log("Ship image loaded successfully");
         };
         this.image.onerror = () => {
             console.error("Failed to load Ship image");
         };
     }
 
+    changeImage(index) {
+        // Cập nhật chỉ số ảnh và load ảnh mới
+        this.imageIndex = index;
+        this.loadImage();
+    }
+
     draw() {
-        this.context.save();
-        this.context.translate(this.x, this.y);
-        this.context.drawImage(this.image, -this.image.width / 16, -this.image.height / 16, this.image.width / 8, this.image.height / 8);
-        this.context.restore();
+
+        if (this.image.complete) {
+            this.context.drawImage(
+                this.image,              // Ảnh nguồn
+                this.x - this.width / 2, // Tọa độ x để vẽ (canh giữa)
+                this.y - this.height / 2,// Tọa độ y để vẽ (canh giữa)
+                this.width,              // Chiều rộng vẽ
+                this.height              // Chiều cao vẽ
+            );
+
+            // this.drawHitBox();
+        }
+
 
         // draw bullets
         this.bullets.forEach(bullet => {
@@ -63,10 +94,10 @@ export class Player extends Collider {
         this.context.beginPath();
         this.context.strokeStyle = 'green';
         this.context.strokeRect(
-            this.x - this.image.width / 16,
-            this.y - this.image.height / 16,
-            this.image.width / 8,
-            this.image.height / 8
+            this.x - this.width / 2,
+            this.y - this.height / 2,
+            this.width,
+            this.height
         );
         this.context.stroke();
     }
@@ -111,7 +142,6 @@ export class Player extends Collider {
 
     collidingShip_Enemy(other) {
         if (this.checkCollision(other)) {
-            console.log("Ship collided enemy.");
             return true
         }
         return false

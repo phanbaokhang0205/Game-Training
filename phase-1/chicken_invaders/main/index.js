@@ -30,10 +30,25 @@ function init() {
     // Player
     ship = new Player(context, canvas, cw / 2, ch - 40)
 
-    // Enemy
-    // enemy = new Enemy(context, cw / 2, 100)
+    // enemies
     renderEnemies()
-    // Chicken
+    
+    // sprite ship
+    let shipImage = 1;
+    setInterval(() => {
+        shipImage = (shipImage % 5) + 1; // Lặp từ 1 đến 5
+        ship.changeImage(shipImage);
+    }, 100);
+
+    // sprite enemy
+    let enemyImage = 1;
+        setInterval(() => {
+            enemyImage = (enemyImage % 6) + 1; // Lặp từ 1 đến 6
+            enemies.forEach(e => {
+                e.changeImage(enemyImage)
+            })
+        }, 100);
+
 
 
     // Audio
@@ -49,6 +64,7 @@ function update() {
         ship.update(enemy)
     })
 }
+
 function draw() {
     ship.draw()
     
@@ -67,6 +83,7 @@ function draw() {
             enemy.color = 'white'
             enemy.draw()
         }
+        
     })
     drawHUD(gameManager.score, 3)
 
@@ -82,7 +99,7 @@ function gameLoop() {
 
 function renderEnemies() {
     let col = 8; // Số cột
-    let row = 2; // Số hàng
+    let row = 1; // Số hàng
     let spacingX = 100; // Khoảng cách giữa các cột (trục X)
     let spacingY = 100; // Khoảng cách giữa các hàng (trục Y)
 

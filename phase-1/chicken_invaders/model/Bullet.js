@@ -7,47 +7,59 @@ export class Bullet extends Collider{
         this.canvas = this.context.canvas;
         this.x = x;
         this.y = y;
-        this.speed = 0.5;
+        this.speed = 0.2;
         this.image = new Image;
         this.visible = true;
+        
+        // sprite
+        this.imageIndex = 1; // Chỉ số ảnh ban đầu
+        this.width = 40;     // Chiều rộng cố định của ảnh bullet
+        this.height = 40;   // Chiều cao cố định của ảnh bullet
 
         this.loadImage();
     }
 
     loadImage() {
-        this.image.src = '../img/blue_bullet.png';
+        this.image.src = `../img/bullet/bullet_${this.imageIndex}.png`;
         this.image.onload = () => {
-            this.width = this.image.width;
-            this.height = this.image.height;
-            console.log("Bullet image loaded successfully");
+            // console.log("Bullet image loaded successfully");
         };
         this.image.onerror = () => {
             console.error("Failed to load Bullet image");
         };
     }
-    greeting() {
-        console.log("Bullets hi.");
+    
+    changeImage(index) {
+        // Cập nhật chỉ số ảnh và load ảnh mới
+        this.imageIndex = index;
+        this.loadImage();
     }
 
 
     draw() {
         if (!this.visible) return
 
-        this.context.save();
-        this.context.translate(this.x, this.y);
-        this.context.drawImage(this.image, -this.image.width/2, -this.image.height/2, this.image.width, this.image.height);
-        this.context.restore();
-        // this.drawHitBox();
+        if (this.image.complete) {
+            this.context.drawImage(
+                this.image,              // Ảnh nguồn
+                this.x - this.width / 2, // Tọa độ x để vẽ (canh giữa)
+                this.y - this.height / 2,// Tọa độ y để vẽ (canh giữa)
+                this.width,              // Chiều rộng vẽ
+                this.height              // Chiều cao vẽ
+            );
+
+            // this.drawHitBox();
+        }
     }
     
     drawHitBox() {
         this.context.beginPath();
         this.context.strokeStyle = 'blue';
         this.context.strokeRect(
-            this.x - this.image.width / 2,
-            this.y - this.image.height / 2,
-            this.image.width,
-            this.image.height
+            this.x - this.width / 2,
+            this.y - this.height / 2,
+            this.width,
+            this.height
         );
         this.context.stroke();
     }
