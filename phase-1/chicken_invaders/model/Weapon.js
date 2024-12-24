@@ -3,7 +3,7 @@ import { Bullet } from "./Bullet.js";
 import { AudioManager } from "../helper/AudioManager.js";
 
 export class Weapon extends Collider {
-    constructor(context, x, y, imgSrc, idleSprite, shootSprite, level) {
+    constructor(context, x, y, imgSrc, idleSprite, shootSprite, level, isShoot) {
         super(x, y);
         this.context = context;
         this.x = x;
@@ -13,6 +13,7 @@ export class Weapon extends Collider {
         this.idleSprite = idleSprite
         this.shootSprite = shootSprite;
         this.level = level;
+        this.isShoot = isShoot;
 
         this.image = new Image()
         this.bullets = []
@@ -42,6 +43,7 @@ export class Weapon extends Collider {
         }, 50);
 
         // Tốc độ bắn tùy thuộc vào level
+        if (!this.isShoot) return
         if (this.level == 1) {
             this.shootSpeed = 3000
         }
@@ -51,19 +53,20 @@ export class Weapon extends Collider {
         if (this.level == 3) {
             this.shootSpeed = 800
         }
-        // setInterval(() => this.shooting(), this.shootSpeed)
+        setInterval(() => this.shooting(), this.shootSpeed)
+
 
         setInterval(() => {
             if (this.state === "idle") {
                 this.imageIndex = (this.imageIndex % this.idleSprite) + 1;
-            } 
+            }
             this.loadImage();
 
         }, 150);
 
         setInterval(() => {
             if (this.state === "shoot") {
-                this.imageIndex = (this.imageIndex % this.shootSprite) + 1; 
+                this.imageIndex = (this.imageIndex % this.shootSprite) + 1;
             }
             this.loadImage();
 

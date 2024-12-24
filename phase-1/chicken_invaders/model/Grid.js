@@ -12,6 +12,7 @@ export class Grid {
 
         this.weaponItems = []
         this.draggingWeapon = null;
+        this.weapons = []
 
         this.installWeapon();
 
@@ -21,9 +22,9 @@ export class Grid {
         // lobby
         this.lobby = new Lobby(this.context, this.weaponItems)
 
-        const weapon1 = new Weapon(this.context, this.lobby.x - this.lobby.width + 0, 0, "weapon1", 4, 4, 1)
-        const weapon2 = new Weapon(this.context, this.lobby.x - this.lobby.width + 200, 0, "weapon2", 6, 6, 2)
-        const weapon3 = new Weapon(this.context, this.lobby.x - this.lobby.width + 400, 0, "weapon3", 4, 6, 3)
+        const weapon1 = new Weapon(this.context, this.lobby.x - this.lobby.width + 0, 0, "weapon1", 4, 4, 1, false)
+        const weapon2 = new Weapon(this.context, this.lobby.x - this.lobby.width + 200, 0, "weapon2", 6, 6, 2, false)
+        const weapon3 = new Weapon(this.context, this.lobby.x - this.lobby.width + 400, 0, "weapon3", 4, 6, 3, false)
         this.weaponItems.push(weapon1)
         this.weaponItems.push(weapon2)
         this.weaponItems.push(weapon3)
@@ -67,8 +68,9 @@ export class Grid {
             const mouseX = e.offsetX;
             const mouseY = e.offsetY;
 
-
             // Kiem tra weapon nao duoc chon
+            // Lấy ra weapon được click vào
+            // Nếu tọa độ của chuột trong khoảng x, y, width, heigh của weapon nào thì chọn weapon đó
             const selectedWeapon = this.weaponItems.find(obj => {
                 return (
                     mouseX >= obj.x &&
@@ -83,21 +85,21 @@ export class Grid {
             // console.log(selectedWeapon);
 
             if (selectedWeapon) {
-                this.draggingWeapon = selectedWeapon; // Lưu trực tiếp đối tượng Weapon
-                this.draggingWeapon._x = mouseX;
-                this.draggingWeapon._y = mouseY;
-
-                // console.log(this.draggingWeapon);
+                this.draggingWeapon = new Weapon(
+                    this.context,
+                    mouseX, mouseY,
+                    selectedWeapon.imgSrc,
+                    selectedWeapon.idleSprite, selectedWeapon.shootSprite,
+                    selectedWeapon.level, true
+                )
             }
         });
 
         this.canvas.addEventListener("mousemove", (e) => {
             if (this.draggingWeapon) {
                 // Cập nhật vị trí của plant đang kéo
-                this.draggingWeapon._x = e.offsetX;
-                this.draggingWeapon._y = e.offsetY;
-                // console.log(this.draggingWeapon._x);
-                // console.log(this.draggingWeapon._y);
+                this.draggingWeapon.x = e.offsetX;
+                this.draggingWeapon.y = e.offsetY;
             }
         });
 
@@ -110,16 +112,16 @@ export class Grid {
                 const col = Math.floor(mouseX / this.cellWidth);
                 const row = Math.floor(mouseY / this.cellHeight);
 
-                // Kiểm tra hợp lệ trước khi thả plant
+                // Kiểm tra hợp lệ trước khi thả weapon
+                // Nếu ô trống thì mới cho thả weapon
                 if (
                     row >= 0 && row < this.rows
                     && col >= 0 && col < this.cols
                     && !this.grid[row][col]
                 ) {
                     this.grid[row][col] = this.draggingWeapon; // Đặt weapon vào lưới
-                    console.log(
-                        `Weapon placed at row: ${row}, col: ${col}, x: ${this.draggingWeapon._x}, y: ${this.draggingWeapon._y}`
-                    );
+                    this.weapons.push(this.draggingWeapon)
+                    console.log(this.weapons);
                 }
 
                 this.draggingWeapon = null; // Ngừng kéo

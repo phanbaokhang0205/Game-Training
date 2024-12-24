@@ -1,6 +1,5 @@
 import { GameManager } from "../helper/GameManager.js";
 import { AudioManager } from "../helper/AudioManager.js";
-import { Player } from "../model/Player.js";
 import { Enemy } from "../model/Enemy.js";
 import { Weapon } from "../model/Weapon.js";
 import { Grid } from "../model/Grid.js";
@@ -12,14 +11,7 @@ let ch;
 let gameManager;
 let enemies = [];
 
-// let weaponLobby = []
-let weapons = [];
-let weapon1;
-let weapon2;
-let weapon3;
-
 let grid;
-let lobby;
 
 
 // audio
@@ -34,21 +26,6 @@ function init() {
     cw = canvas.width
     ch = canvas.height
     
-
-
-    // Weapons
-    // weapon1 = new Weapon(context, lobby.x - lobby.width + 0, 0 + 100, "weapon1", 4, 4, 1)
-    // weapon2 = new Weapon(context, lobby.x - lobby.width + 200, 0 + 100, "weapon2", 6, 6, 2)
-    // weapon3 = new Weapon(context, lobby.x - lobby.width + 400, 0 + 100, "weapon3", 4, 6, 3)
-    
-    // weapons.push(weapon1);
-    // weapons.push(weapon2);
-    // weapons.push(weapon3);
-
-    // weaponLobby.push(weapon1);
-    // weaponLobby.push(weapon2);
-    // weaponLobby.push(weapon3);
-
     // enemies
     renderEnemies()
 
@@ -58,7 +35,6 @@ function init() {
     // grid
     grid = new Grid(6, 10, context, cw, ch)
 
-    
 
     // sprite enemy
     let enemyImage = 1;
@@ -80,7 +56,7 @@ function init() {
 }
 function update() {
     enemies.forEach(enemy => {
-        weapons.forEach(obj => {
+        grid.weapons.forEach(obj => {
             if (obj.collidingBullet_Enemy(enemy)) {
                 gameManager.updateScore(1)
             }
@@ -130,12 +106,12 @@ function renderEnemies() {
     let col = 1; // Số cột
     let row = 5; // Số hàng
     let spacingX = 100; // Khoảng cách giữa các cột (trục X)
-    let spacingY = 100; // Khoảng cách giữa các hàng (trục Y)
+    let spacingY = 120; // Khoảng cách giữa các hàng (trục Y)
 
     for (let i = 0; i < row; i++) {
         for (let j = 0; j < col; j++) {
             // const enemy = new Enemy(context, j * spacingX + cw, i * spacingY + 50);
-            const enemy = new Enemy(context, j * spacingX + cw, i * spacingY + 150);
+            const enemy = new Enemy(context, j * spacingX + cw, i * spacingY + 180);
             enemies.push(enemy);
         }
     }
