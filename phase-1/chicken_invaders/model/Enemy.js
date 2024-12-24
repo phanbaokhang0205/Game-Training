@@ -15,10 +15,12 @@ export class Enemy extends Collider{
 
         // load image
         this.loadImage();
+
+        
     }
 
     loadImage() {
-        this.image.src = `../img/enemy_1/ship_${this.imageIndex}.png`;
+        this.image.src = `../img/enemy_1/robot3-${this.imageIndex}.png`;
         this.image.onload = () => {
             // console.log("Ship image loaded successfully");
         };
@@ -42,7 +44,7 @@ export class Enemy extends Collider{
                 this.width,              // Chiều rộng vẽ
                 this.height              // Chiều cao vẽ
             );
-            this.drawHitBox();
+            // this.drawHitBox();
         }
 
     }
@@ -60,6 +62,6 @@ export class Enemy extends Collider{
     }
 
     update() {
-        
+        this.x -= 0.1
     }
 }

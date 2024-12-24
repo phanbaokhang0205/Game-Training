@@ -13,8 +13,8 @@ export class Player extends Collider {
         
         // sprite
         this.imageIndex = 1; // Chỉ số ảnh ban đầu
-        this.width = 60;     // Chiều rộng cố định của ảnh ship
-        this.height = 100;   // Chiều cao cố định của ảnh ship
+        this.width = 80;     // Chiều rộng cố định của ảnh ship
+        this.height = 80;   // Chiều cao cố định của ảnh ship
 
         // audio
         this.au_shooting = new AudioManager()
@@ -35,7 +35,7 @@ export class Player extends Collider {
         // Thay đổi ảnh mỗi 2 giây
         let bulletSprite = 1;
         setInterval(() => {
-            bulletSprite = (bulletSprite % 6) + 1; // Lặp từ 1 đến 5
+            bulletSprite = (bulletSprite % 4) + 1; // Lặp từ 1 đến 5
             this.bullets.forEach(b => {
                 b.changeImage(bulletSprite);
             })
@@ -47,7 +47,7 @@ export class Player extends Collider {
 
     loadImage() {
         // this.image.src = '../img/ship_2.jpg';
-        this.image.src = `../img/main_ship/ship_${this.imageIndex}.jpg`;
+        this.image.src = `../img/weapon/weapon1/ilde_${this.imageIndex}.png`;
         this.image.onload = () => {
             // console.log("Ship image loaded successfully");
         };
@@ -117,12 +117,12 @@ export class Player extends Collider {
     }
 
     shoot() {
-        this.canvas.addEventListener('click', () => {
-            const bullet = new Bullet(this.context, this.x, this.y - 50);
-            this.bullets.push(bullet)
-            this.au_shooting.loadSound('shooting_4', '../audio/shooting_4.mp3')
-            this.au_shooting.playSound('shooting_4')
-        })
+        // this.canvas.addEventListener('click', () => {
+        //     const bullet = new Bullet(this.context, this.x, this.y - 50);
+        //     this.bullets.push(bullet)
+        //     this.au_shooting.loadSound('shooting_4', '../audio/shooting_4.mp3')
+        //     this.au_shooting.playSound('shooting_4')
+        // })
     }
 
     collidingBullet_Enemy(other) {
