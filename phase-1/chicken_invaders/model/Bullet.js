@@ -1,7 +1,7 @@
 import { Collider } from "../helper/Collider.js";
 
-export class Bullet extends Collider{
-    constructor(context, x, y) {
+export class Bullet extends Collider {
+    constructor(context, x, y, belongTo, damage) {
         super(x, y)
         this.context = context;
         this.canvas = this.context.canvas;
@@ -10,7 +10,9 @@ export class Bullet extends Collider{
         this.speed = 1;
         this.image = new Image;
         this.visible = true;
-        
+        this.belongTo = belongTo;
+        this.damage = damage;
+
         // sprite
         this.imageIndex = 1; // Chỉ số ảnh ban đầu
         this.width = 40;     // Chiều rộng cố định của ảnh bullet
@@ -28,7 +30,7 @@ export class Bullet extends Collider{
             console.error("Failed to load Bullet image");
         };
     }
-    
+
     changeImage(index) {
         // Cập nhật chỉ số ảnh và load ảnh mới
         this.imageIndex = index;
@@ -51,7 +53,7 @@ export class Bullet extends Collider{
             // this.drawHitBox();
         }
     }
-    
+
     drawHitBox() {
         this.context.beginPath();
         this.context.strokeStyle = 'blue';
@@ -65,9 +67,15 @@ export class Bullet extends Collider{
     }
 
     update(other) {
-        // this.y -= this.speed;
-        this.x += this.speed;
-        this.checkCollision(other);
+        if (this.belongTo == 'weapon') {
+            this.x += this.speed;
+            this.checkCollision(other);
+        }
+        if (this.belongTo == 'enemy') {
+            this.x -= this.speed;
+            this.checkCollision(other);
+        }
+
     }
-    
+
 }

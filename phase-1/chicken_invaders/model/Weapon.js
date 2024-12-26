@@ -79,6 +79,10 @@ export class Weapon extends Collider {
         this.loadImage();
     }
 
+    setShootSpeed() {
+
+    }
+
     loadImage() {
         if (this.state == 'idle') {
             this.image.src = `../img/weapon/${this.imgSrc}/idle_${this.imageIndex}.png`;
@@ -86,10 +90,6 @@ export class Weapon extends Collider {
         } else if (this.state == 'shoot') {
             this.image.src = `../img/weapon/${this.imgSrc}/shoot_${this.imageIndex}.png`;
         }
-
-        this.image.onload = () => {
-            // console.log("Ship image loaded successfully");
-        };
         this.image.onerror = () => {
             console.error("Failed to load weapon image");
         };
@@ -100,12 +100,12 @@ export class Weapon extends Collider {
         this.imageIndex = 1; // Reset chỉ số ảnh cho trạng thái bắn
         this.loadImage();
 
-        const bullet = new Bullet(this.context, this.x + 50, this.y);
+        const bullet = new Bullet(this.context, this.x + 50, this.y, 'weapon', this.level * 10);
         this.bullets.push(bullet)
         this.au_shooting.loadSound('shooting_4', '../audio/shooting_4.mp3')
         this.au_shooting.playSound('shooting_4')
 
-        // Hiển thị animation bắn trong 200ms
+
         setTimeout(() => {
             this.state = "idle"; // Trả về trạng thái idle
             this.imageIndex = 1; // Reset chỉ số ảnh cho trạng thái idle
@@ -114,7 +114,6 @@ export class Weapon extends Collider {
     }
 
     draw(x = this.x, y = this.y) {
-        // duoc ve khi nhan phim 1
         if (this.image.complete) {
             this.context.drawImage(
                 this.image,              // Ảnh nguồn
@@ -132,8 +131,7 @@ export class Weapon extends Collider {
                 bullet.draw()
             }
             return
-        }
-        );
+        });
     }
 
     drawHitBox() {
@@ -148,9 +146,12 @@ export class Weapon extends Collider {
         this.context.stroke();
     }
 
-    update(enemy) {
-        this.collidingBullet_Enemy(enemy)
-        this.bullets.forEach(bullet => bullet.update(enemy));
+    update(enemies) {
+        enemies.forEach(e => {
+
+            this.collidingBullet_Enemy(e)
+            this.bullets.forEach(bullet => bullet.update(e));
+        })
     }
 
     collidingBullet_Enemy(other) {

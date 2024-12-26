@@ -25,7 +25,7 @@ function init() {
     context = canvas.getContext('2d')
     cw = canvas.width
     ch = canvas.height
-    
+
     // enemies
     renderEnemies()
 
@@ -34,16 +34,6 @@ function init() {
 
     // grid
     grid = new Grid(6, 10, context, cw, ch)
-
-
-    // sprite enemy
-    let enemyImage = 1;
-    setInterval(() => {
-        enemyImage = (enemyImage % 8) + 1; // Lặp từ 1 đến 6
-        enemies.forEach(e => {
-            e.changeImage(enemyImage)
-        })
-    }, 300);
 
     // Audio
     get_star = new AudioManager();
@@ -55,28 +45,66 @@ function init() {
     requestAnimationFrame(gameLoop)
 }
 function update() {
-    enemies.forEach(enemy => {
-        grid.weapons.forEach(obj => {
-            if (obj.collidingBullet_Enemy(enemy)) {
-                gameManager.updateScore(1)
-            }
-            obj.update(enemy)
-        })
+    enemies = enemies.filter(enemy => enemy.isAlive);
+    // Cập nhật Weapons và kiểm tra va chạm
+    grid.weapons.forEach(weapon => {
+        weapon.update(enemies);
+    });
 
-        enemy.update()
-    })
+    // Cập nhật Enemies và kiểm tra va chạm
+    enemies.forEach(enemy => {
+        enemy.update(grid.weapons);
+    });
+
+    // Kiểm tra va chạm giữa Weapons và Enemies
+    checkCollisions(grid.weapons, enemies);
+    // grid.weapons.forEach(obj => {
+    //     if (obj.collidingBullet_Enemy(enemies)) {
+    //         gameManager.updateScore(1)
+    //     }
+    //     obj.update(enemies)
+    // })
+
+    // enemies.forEach(enemy => {
+    //     enemy.update(grid.weapons)
+    // })
 }
 
+function checkCollisions(weapons, enemies) {
+    weapons.forEach(weapon => {
+        weapon.bullets.forEach(bullet => {
+            enemies.forEach(enemy => {
+                if (bullet.checkCollision(enemy)) {
+                    // vien dan bien mat
+                    bullet.visible = false;
+                    // - HP enemy
+                    enemy.isDamaged = true;
+                    enemy.DTPB = bullet.damage;
+                    
+                }
+            });
+        });
+    });
+
+    enemies.forEach(enemy => {
+        enemy.bullets.forEach(bullet => {
+            weapons.forEach(weapon => {
+                if (bullet.checkCollision(weapon)) {
+                    bullet.visible = false;
+                    console.log("-1 heal weapon");
+                }
+            });
+        });
+    });
+}
+
+
 function draw() {
-    // const backgroundImage = new Image();
-    // backgroundImage.src = '../img/Far_Future_Lawn.jpg'; // Đường dẫn tới ảnh
-    // context.drawImage(backgroundImage, 0, 0, cw, ch);
+    const backgroundImage = new Image();
+    backgroundImage.src = '../img/Far_Future_Lawn.jpg'; // Đường dẫn tới ảnh
+    context.drawImage(backgroundImage, 0, 0, cw, ch);
     grid.draw()
     grid.drawWeaponIcon()
-
-    // weapons.forEach(obj => {
-    //     obj.draw()
-    // })
 
     enemies.forEach(enemy => {
         enemy.draw()
@@ -110,8 +138,7 @@ function renderEnemies() {
 
     for (let i = 0; i < row; i++) {
         for (let j = 0; j < col; j++) {
-            // const enemy = new Enemy(context, j * spacingX + cw, i * spacingY + 50);
-            const enemy = new Enemy(context, j * spacingX + cw, i * spacingY + 180);
+            const enemy = new Enemy(context, j * spacingX + cw, i * spacingY + 170 , 100*100);
             enemies.push(enemy);
         }
     }

@@ -15,13 +15,13 @@ export class Grid {
         this.weapons = []
 
         this.installWeapon();
-
         // Khoi tao mang 2 chieu
         this.grid = Array.from({ length: rows }, () => Array(cols).fill(null));
 
         // lobby
         this.lobby = new Lobby(this.context, this.weaponItems)
 
+        // Weapon Lobby
         const weapon1 = new Weapon(this.context, this.lobby.x - this.lobby.width + 0, 0, "weapon1", 4, 4, 1, false)
         const weapon2 = new Weapon(this.context, this.lobby.x - this.lobby.width + 200, 0, "weapon2", 6, 6, 2, false)
         const weapon3 = new Weapon(this.context, this.lobby.x - this.lobby.width + 400, 0, "weapon3", 4, 6, 3, false)
@@ -34,7 +34,7 @@ export class Grid {
     draw() {
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
-                this.context.strokeStyle = "green";
+                this.context.strokeStyle = "rgba(0, 0, 0, 0)";
                 this.context.strokeRect(
                     col * this.cellWidth,
                     row * this.cellHeight,
@@ -61,7 +61,7 @@ export class Grid {
         this.lobby.drawWeaponItem()
     }
 
-    // installWeapon params:
+    
     installWeapon() {
         // su kien chon 1 weapon de install len canvas
         this.canvas.addEventListener("mousedown", (e) => {
