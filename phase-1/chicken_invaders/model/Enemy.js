@@ -162,7 +162,7 @@ export class Enemy extends Collider {
             this.width,              // Chiều rộng vẽ
             this.height              // Chiều cao vẽ
         );
-        this.drawHitBox();
+        // this.drawHitBox();
 
         // Enemy bắn đạn
         // this.bullets.forEach(bullet => {
