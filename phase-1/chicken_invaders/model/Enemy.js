@@ -2,7 +2,7 @@ import { Collider } from "../helper/Collider.js";
 import { Bullet } from "./Bullet.js";
 
 export class Enemy extends Collider {
-    constructor(context, x, y, HP) {
+    constructor(context, x, y, HP, level) {
         super(x, y)
         this.context = context;
         this.x = x;
@@ -28,6 +28,8 @@ export class Enemy extends Collider {
         this.HP = HP;
         this.DTPB = 0; // damage taken per bullet
         this.isAlive = true;
+        this.level = level;
+        this.damage = this.level * 10
 
         // load image
         this.loadImage();
@@ -48,28 +50,18 @@ export class Enemy extends Collider {
             this.loadImage();
         }, 110);
         // Goi ham isHurt ngay lap tuc khi isDamaged = true
-        setInterval(() => this.isHurt(), 1)
-
-
-        // shooting
-        // setInterval(() => this.shoot(), 3000)
-        setInterval(() => {
-            if (this.state === "shoot") {
-                this.imageIndex = (this.imageIndex % this.shootSprite) + 1;
-            }
-            this.loadImage();
-        }, 100);
+        // setInterval(() => this.isHurt(), 1)
 
         // attack
-        setInterval(() => this.attack(), 2000)
         setInterval(() => {
             if (this.state === "attack") {
                 this.imageIndex = (this.imageIndex % this.attackSprite) + 1;
             }
             this.loadImage();
-        }, 100);
+        }, 200);
 
         // dead
+        // **Chưa được**
         setInterval(() => {
             if (this.state === "dead") {
                 this.imageIndex = (this.imageIndex % this.deadSprite) + 1;
@@ -108,38 +100,37 @@ export class Enemy extends Collider {
         }, 1000);
     }
 
-    isHurt() {
-        if (!this.isDamaged) return
+    // isHurt() {
+    //     if (!this.isDamaged) return
 
-        this.state = 'hurt';
-        this.imageIndex = 1;
-        this.speed = 0;
-        this.loadImage()
-        this.isDamaged = false
+    //     this.state = 'hurt';
+    //     this.imageIndex = 1;
+    //     this.speed = 0;
+    //     this.loadImage()
+    //     this.isDamaged = false
 
-        this.HP -= this.DTPB;
-        console.log(this.HP);
+    //     this.HP -= this.DTPB;
 
-        setTimeout(() => {
-            this.state = "walk";
-            this.imageIndex = 1;
-            this.speed = 0.5;
-            this.loadImage();
-        }, 120 * 3);
-    }
+    //     setTimeout(() => {
+    //         this.state = "walk";
+    //         this.imageIndex = 1;
+    //         this.speed = 0.5;
+    //         this.loadImage();
+    //     }, 120 * 3);
+    // }
+
+    /** Logic attack
+     * 1. Kiem tra va cham với Weapon
+     * 2. Phát hiện va chạm.
+     * 3. Gọi hàm attack()
+     * 4. 
+     */
 
     attack() {
         this.state = 'attack';
         this.imageIndex = 1;
         this.speed = 0;
         this.loadImage()
-
-        setTimeout(() => {
-            this.state = "walk";
-            this.imageIndex = 1;
-            this.speed = 0.5;
-            this.loadImage();
-        }, 900);
     }
 
     dead() {
@@ -162,7 +153,7 @@ export class Enemy extends Collider {
             this.width,              // Chiều rộng vẽ
             this.height              // Chiều cao vẽ
         );
-        // this.drawHitBox();
+        this.drawHitBox();
 
         // Enemy bắn đạn
         // this.bullets.forEach(bullet => {
@@ -186,29 +177,20 @@ export class Enemy extends Collider {
         this.context.stroke();
     }
 
-    collidingBullet_Enemy(other) {
-        let isShot = false
-
-        this.bullets.forEach(b => {
-            if (b.visible && b.checkCollision(other)) {
-                b.visible = false;
-                // this.au_hitEnemy.loadSound('pipe_hit', '../audio/pipe_hit.mp3')
-                // this.au_hitEnemy.playSound('pipe_hit')
-                isShot = true
+    update(weapons) {
+        if (this.state == 'walk') {
+            this.x -= this.speed
+        }
+        
+        weapons.forEach(weapon => {
+            // Kiểm tra va chạm với Weapon
+            if (this.checkCollision(weapon) && this.state !== 'attack') {
+                this.attack()
             }
         })
 
-        return isShot
-    }
-
-    update(weapons) {
-        this.x -= this.speed
-        weapons.forEach(w => {
-            this.collidingBullet_Enemy(w)
-            this.bullets.forEach(bullet => bullet.update(w));
-        })
-
         // Kiem tra trang thai alive 
+        // **Chưa được**
         this.dead()
 
     }

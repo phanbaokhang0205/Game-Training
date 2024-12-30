@@ -9,16 +9,14 @@ export class Collider {
     checkCollision(other) {
         if (other instanceof Collider) {
             return (
-                this.x < other.x + other.width &&
-                this.x + this.width > other.x &&
-                this.y < other.y + other.height &&
-                this.y + this.height > other.y
+                this.x - this.width / 2 < other.x + other.width / 2 &&
+                this.x + this.width / 2 > other.x - other.width / 2 &&
+                this.y - this.height / 2 < other.y + other.height / 2 &&
+                this.y + this.height > other.y - other.height / 2
             );
         }
         return false;
     }
-
-    
 
     onCollision(other) {
         console.log("Collision detected with:", other);

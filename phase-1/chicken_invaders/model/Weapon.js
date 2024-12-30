@@ -3,7 +3,7 @@ import { Bullet } from "./Bullet.js";
 import { AudioManager } from "../helper/AudioManager.js";
 
 export class Weapon extends Collider {
-    constructor(context, x, y, imgSrc, idleSprite, shootSprite, level, isShoot) {
+    constructor(context, x, y, imgSrc, idleSprite, shootSprite, level, isShoot, HP) {
         super(x, y);
         this.context = context;
         this.x = x;
@@ -12,8 +12,13 @@ export class Weapon extends Collider {
         this.src = `../img/weapon/${this.imgSrc}/idle_1.png`
         this.idleSprite = idleSprite
         this.shootSprite = shootSprite;
+
+
         this.level = level;
         this.isShoot = isShoot;
+        this.HP = HP
+        this.DTPE = 0; // damage taken per Enemy
+        this.isDamaged = false;
 
         this.image = new Image()
         this.bullets = []
@@ -123,7 +128,7 @@ export class Weapon extends Collider {
                 this.height              // Chiều cao vẽ
             );
 
-            // this.drawHitBox();
+            this.drawHitBox();
         }
         // draw bullets
         this.bullets.forEach(bullet => {
@@ -136,7 +141,7 @@ export class Weapon extends Collider {
 
     drawHitBox() {
         this.context.beginPath();
-        this.context.strokeStyle = 'green';
+        this.context.strokeStyle = 'black';
         this.context.strokeRect(
             this.x - this.width / 2,
             this.y - this.height / 2,

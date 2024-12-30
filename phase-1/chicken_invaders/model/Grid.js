@@ -90,7 +90,7 @@ export class Grid {
                     mouseX, mouseY,
                     selectedWeapon.imgSrc,
                     selectedWeapon.idleSprite, selectedWeapon.shootSprite,
-                    selectedWeapon.level, true
+                    selectedWeapon.level, true, 1000
                 )
             }
         });

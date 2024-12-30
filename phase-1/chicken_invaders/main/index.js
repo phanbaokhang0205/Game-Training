@@ -80,18 +80,17 @@ function checkCollisions(weapons, enemies) {
                     // - HP enemy
                     enemy.isDamaged = true;
                     enemy.DTPB = bullet.damage;
-                    
+                    enemy.HP -= enemy.DTPB
                 }
-            });
-        });
-    });
 
-    enemies.forEach(enemy => {
-        enemy.bullets.forEach(bullet => {
-            weapons.forEach(weapon => {
-                if (bullet.checkCollision(weapon)) {
-                    bullet.visible = false;
-                    console.log("-1 heal weapon");
+                if (enemy.checkCollision(weapon)) {
+                    if (!weapon.isDamaged) {
+                        weapon.isDamaged = true;
+                        console.log("-1 HP Weapon");
+                    }
+                    setInterval(()=> {
+                        weapon.isDamaged = false;
+                    }, 2000*3)
                 }
             });
         });
@@ -138,7 +137,7 @@ function renderEnemies() {
 
     for (let i = 0; i < row; i++) {
         for (let j = 0; j < col; j++) {
-            const enemy = new Enemy(context, j * spacingX + cw, i * spacingY + 170 , 100*100);
+            const enemy = new Enemy(context, j * spacingX + cw, i * spacingY + 170 , 1000*100, 1);
             enemies.push(enemy);
         }
     }
