@@ -20,7 +20,7 @@ export class Enemy extends Collider {
 
         this.walkSprite = 8
         this.shootSprite = 8
-        this.attackSprite = 3
+        this.attackSprite = 7
         this.hurtSprite = 3
         this.deadSprite = 7
 
@@ -71,7 +71,8 @@ export class Enemy extends Collider {
     }
 
     loadImage() {
-        this.image.src = `../img/enemy_1/robot1/${this.state}_${this.imageIndex}.png`;
+        // this.image.src = `../img/enemy_1/robot1/${this.state}_${this.imageIndex}.png`;
+        this.image.src = `../img/enemy_1/robot1/${this.state}/tile00_${this.imageIndex}.png`;
     }
 
     changeImage(index) {

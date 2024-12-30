@@ -90,7 +90,7 @@ function checkCollisions(weapons, enemies) {
                     }
                     setInterval(()=> {
                         weapon.isDamaged = false;
-                    }, 2000*3)
+                    }, 200*4)
                 }
             });
         });
