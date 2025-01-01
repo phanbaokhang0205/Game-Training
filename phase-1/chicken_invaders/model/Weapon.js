@@ -14,6 +14,7 @@ export class Weapon extends Collider {
         this.shootSprite = shootSprite;
 
 
+        this.isAlive = true;
         this.level = level;
         this.isShoot = isShoot;
         this.HP = HP
@@ -84,9 +85,28 @@ export class Weapon extends Collider {
         this.loadImage();
     }
 
-    setShootSpeed() {
 
+    decreaseHP(DTPE) {
+        if (!this.isDamaged) {
+
+            this.isDamaged = true;
+            this.DTPE = DTPE;
+
+            // Tạo một bộ đếm định kỳ
+            this.HP -= this.DTPE;
+            // console.log(`-1 HP weapon. Current HP:${this.level} ${this.HP}`);
+            // Kiểm tra nếu HP <= 0 thì dừng giảm máu
+            if (this.HP <= 0) {
+                this.isAlive = false;
+            }
+
+            // Reset trạng thái `isDamaged` sau 2 giây
+            setTimeout(() => {
+                this.isDamaged = false;
+            }, 600);
+        }
     }
+
 
     loadImage() {
         if (this.state == 'idle') {
@@ -95,6 +115,8 @@ export class Weapon extends Collider {
         } else if (this.state == 'shoot') {
             this.image.src = `../img/weapon/${this.imgSrc}/shoot_${this.imageIndex}.png`;
         }
+        this.image.onload = () => {
+        };
         this.image.onerror = () => {
             console.error("Failed to load weapon image");
         };
@@ -105,7 +127,9 @@ export class Weapon extends Collider {
         this.imageIndex = 1; // Reset chỉ số ảnh cho trạng thái bắn
         this.loadImage();
 
-        const bullet = new Bullet(this.context, this.x + 50, this.y, 'weapon', this.level * 10);
+        const bullet = new Bullet(this.context, this.x, this.y, 'weapon', this.level * 1);
+        // console.log("x"+ this.x + this.width / 2);
+        // console.log("y"+ this.y + this.height / 2);
         this.bullets.push(bullet)
         this.au_shooting.loadSound('shooting_4', '../audio/shooting_4.mp3')
         this.au_shooting.playSound('shooting_4')
@@ -119,6 +143,8 @@ export class Weapon extends Collider {
     }
 
     draw(x = this.x, y = this.y) {
+        if (!this.isAlive) return;
+
         if (this.image.complete) {
             this.context.drawImage(
                 this.image,              // Ảnh nguồn
@@ -128,7 +154,12 @@ export class Weapon extends Collider {
                 this.height              // Chiều cao vẽ
             );
 
-            this.drawHitBox();
+            // Vẽ thanh máu
+            this.context.fillStyle = "green";
+            const hpBarWidth = (this.width * this.HP) / 100; // Giả sử max HP là 100
+            this.context.fillRect(this.x - this.width / 2, this.y - this.height / 2 - 10, hpBarWidth, 5);
+
+            // this.drawHitBox();
         }
         // draw bullets
         this.bullets.forEach(bullet => {

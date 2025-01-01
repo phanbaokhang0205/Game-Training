@@ -15,20 +15,24 @@ export class Bullet extends Collider {
 
         // sprite
         this.imageIndex = 1; // Chỉ số ảnh ban đầu
-        this.width = 40;     // Chiều rộng cố định của ảnh bullet
-        this.height = 40;   // Chiều cao cố định của ảnh bullet
+        // this.width = this.image.width;     // Chiều rộng cố định của ảnh bullet
+        // this.height = this.image.height;   // Chiều cao cố định của ảnh bullet
 
         this.loadImage();
     }
 
     loadImage() {
+        
         this.image.src = `../img/bullet/bullet1/bullet1_${this.imageIndex}.png`;
         this.image.onload = () => {
+            this.width = this.image.width / 3;     // Chiều rộng cố định của ảnh bullet
+            this.height = this.image.height / 3;
             // console.log("Bullet image loaded successfully");
         };
         this.image.onerror = () => {
             console.error("Failed to load Bullet image");
         };
+        
     }
 
     changeImage(index) {
@@ -44,8 +48,8 @@ export class Bullet extends Collider {
         if (this.image.complete) {
             this.context.drawImage(
                 this.image,              // Ảnh nguồn
-                this.x - this.width / 2, // Tọa độ x để vẽ (canh giữa)
-                this.y - this.height / 2,// Tọa độ y để vẽ (canh giữa)
+                this.x , // Tọa độ x để vẽ (canh giữa)
+                this.y ,// Tọa độ y để vẽ (canh giữa)
                 this.width,              // Chiều rộng vẽ
                 this.height              // Chiều cao vẽ
             );
@@ -67,6 +71,7 @@ export class Bullet extends Collider {
     }
 
     update(other) {
+        
         if (this.belongTo == 'weapon') {
             this.x += this.speed;
             this.checkCollision(other);

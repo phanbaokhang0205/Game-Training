@@ -35,6 +35,7 @@ export class Grid {
         for (let row = 0; row < this.rows; row++) {
             for (let col = 0; col < this.cols; col++) {
                 this.context.strokeStyle = "rgba(0, 0, 0, 0)";
+                // this.context.strokeStyle = "red";
                 this.context.strokeRect(
                     col * this.cellWidth,
                     row * this.cellHeight,
@@ -80,17 +81,13 @@ export class Grid {
                 );
             });
 
-            // console.log(mouseX);
-            // console.log(mouseY);
-            // console.log(selectedWeapon);
-
             if (selectedWeapon) {
                 this.draggingWeapon = new Weapon(
                     this.context,
                     mouseX, mouseY,
                     selectedWeapon.imgSrc,
                     selectedWeapon.idleSprite, selectedWeapon.shootSprite,
-                    selectedWeapon.level, true, 1000
+                    selectedWeapon.level, true, 100
                 )
             }
         });

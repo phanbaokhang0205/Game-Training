@@ -11,16 +11,16 @@ export class Enemy extends Collider {
         this.color = 'red'
         this.image = new Image;
 
+        // this.width = 100;
+        // this.height = 90;
         this.imageIndex = 1;
-        this.width = 100;
-        this.height = 90;
         this.bullets = []
 
         this.state = 'walk'
 
         this.walkSprite = 8
         this.shootSprite = 8
-        this.attackSprite = 7
+        this.attackSprite = 3
         this.hurtSprite = 3
         this.deadSprite = 7
 
@@ -30,6 +30,7 @@ export class Enemy extends Collider {
         this.isAlive = true;
         this.level = level;
         this.damage = this.level * 10
+        this.targetWeapons = null;
 
         // load image
         this.loadImage();
@@ -58,7 +59,7 @@ export class Enemy extends Collider {
                 this.imageIndex = (this.imageIndex % this.attackSprite) + 1;
             }
             this.loadImage();
-        }, 200);
+        }, 300);
 
         // dead
         // **Chưa được**
@@ -73,7 +74,57 @@ export class Enemy extends Collider {
     loadImage() {
         // this.image.src = `../img/enemy_1/robot1/${this.state}_${this.imageIndex}.png`;
         this.image.src = `../img/enemy_1/robot1/${this.state}/tile00_${this.imageIndex}.png`;
+        // this.image.src = `../img/enemy_1/robot1/Destroyer/Walk.png`;
+        this.image.onload = () => {
+            this.width = this.image.width;
+            this.height = this.image.height;
+            // this.loadAnimation(this.image, this.walkSprite, 1, 0)
+        };
     }
+
+    // loadAnimation(sprite, cols, rows, currentFrame) {
+    //     // Define the number of columns and rows in the sprite
+    //     // let numColumns = 5;
+    //     // let numRows = 2;
+
+    //     // Define the size of a frame
+    //     let frameWidth = this.image.width / cols;;
+    //     let frameHeight = this.image.height / rows;;
+
+    //     // The sprite image frame starts from 0
+    //     // let currentFrame = 0;
+
+    //     setInterval(() => {
+    //         // Pick a new frame
+    //         currentFrame++;
+
+    //         // Make the frames loop
+    //         let maxFrame = cols * rows - 1;
+    //         if (currentFrame > maxFrame) {
+    //             currentFrame = 0;
+    //         }
+
+    //         // Update rows and columns
+    //         let column = currentFrame % cols;
+    //         let row = Math.floor(currentFrame / cols);
+
+    //         // Clear and draw
+    //         // this.context.clearRect(0, 0, canvas.width, canvas.height);
+    //         // this.context.drawImage(sprite, column * frameWidth, row * frameHeight, frameWidth, frameHeight, 10, 30, frameWidth, frameHeight);
+    //         this.context.drawImage(
+    //             sprite,
+    //             column * frameWidth, // Tọa độ x của khung hình
+    //             row * frameHeight, // Tọa độ y của khung hình
+    //             frameWidth, // Chiều rộng khung hình
+    //             frameHeight, // Chiều cao khung hình
+    //             this.x - this.width / 2, // Tọa độ x vẽ trên canvas
+    //             this.y - this.height / 2, // Tọa độ y vẽ trên canvas
+    //             this.width, // Chiều rộng trên canvas
+    //             this.height // Chiều cao trên canvas
+    //         );
+    //         //Wait for next step in the loop
+    //     }, 100);
+    // }
 
     changeImage(index) {
         // Cập nhật chỉ số ảnh và load ảnh mới
@@ -120,12 +171,12 @@ export class Enemy extends Collider {
     //     }, 120 * 3);
     // }
 
-    /** Logic attack
-     * 1. Kiem tra va cham với Weapon
-     * 2. Phát hiện va chạm.
-     * 3. Gọi hàm attack()
-     * 4. 
-     */
+    walk() {
+        this.state = "walk";
+        this.imageIndex = 1;
+        this.speed = 0.5;
+        this.loadImage();
+    }
 
     attack() {
         this.state = 'attack';
@@ -154,16 +205,13 @@ export class Enemy extends Collider {
             this.width,              // Chiều rộng vẽ
             this.height              // Chiều cao vẽ
         );
-        this.drawHitBox();
 
-        // Enemy bắn đạn
-        // this.bullets.forEach(bullet => {
-        //     if (bullet.visible) {
-        //         bullet.draw()
-        //     }
-        //     return
-        // });
+        // Vẽ thanh máu
+        // this.context.fillStyle = "red";
+        // const hpBarWidth = (this.width * this.HP) / 1000; // Giả sử max HP là 1000
+        // this.context.fillRect(this.x - this.width / 2, this.y - this.height / 2, hpBarWidth, 5);
 
+        // this.drawHitBox();
     }
 
     drawHitBox() {
@@ -182,13 +230,26 @@ export class Enemy extends Collider {
         if (this.state == 'walk') {
             this.x -= this.speed
         }
-        
+
+        // Kiểm tra va chạm với Weapon
         weapons.forEach(weapon => {
-            // Kiểm tra va chạm với Weapon
             if (this.checkCollision(weapon) && this.state !== 'attack') {
+                this.targetWeapons = weapon
                 this.attack()
             }
         })
+
+        // Kiểm tra nếu đang tấn công một Weapon
+        if (this.targetWeapons) {
+            // Nếu Weapon đã chết, trở về trạng thái "walk"
+            if (!this.targetWeapons.isAlive) {
+                this.targetWeapons = null
+                this.walk()
+            }
+            return // Không kiểm tra các Weapon của các Enemy khác chỉ kiểm tra đối với weapon mà Enemy va chạm
+        }
+
+
 
         // Kiem tra trang thai alive 
         // **Chưa được**

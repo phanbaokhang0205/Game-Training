@@ -33,7 +33,7 @@ function init() {
     gameManager = new GameManager()
 
     // grid
-    grid = new Grid(6, 10, context, cw, ch)
+    grid = new Grid(6, 9, context, cw, ch)
 
     // Audio
     get_star = new AudioManager();
@@ -46,8 +46,10 @@ function init() {
 }
 function update() {
     enemies = enemies.filter(enemy => enemy.isAlive);
+    let weapons = grid.weapons.filter(weapon => weapon.isAlive);
+
     // Cập nhật Weapons và kiểm tra va chạm
-    grid.weapons.forEach(weapon => {
+    weapons.forEach(weapon => {
         weapon.update(enemies);
     });
 
@@ -58,16 +60,7 @@ function update() {
 
     // Kiểm tra va chạm giữa Weapons và Enemies
     checkCollisions(grid.weapons, enemies);
-    // grid.weapons.forEach(obj => {
-    //     if (obj.collidingBullet_Enemy(enemies)) {
-    //         gameManager.updateScore(1)
-    //     }
-    //     obj.update(enemies)
-    // })
 
-    // enemies.forEach(enemy => {
-    //     enemy.update(grid.weapons)
-    // })
 }
 
 function checkCollisions(weapons, enemies) {
@@ -84,13 +77,7 @@ function checkCollisions(weapons, enemies) {
                 }
 
                 if (enemy.checkCollision(weapon)) {
-                    if (!weapon.isDamaged) {
-                        weapon.isDamaged = true;
-                        console.log("-1 HP Weapon");
-                    }
-                    setInterval(()=> {
-                        weapon.isDamaged = false;
-                    }, 200*4)
+                    weapon.decreaseHP(enemy.damage); // Giảm 1 HP mỗi lần
                 }
             });
         });
@@ -107,19 +94,13 @@ function draw() {
 
     enemies.forEach(enemy => {
         enemy.draw()
-        // // update color when collide with enemy
-        // if (!ship.collidingShip_Enemy(enemy)) {
-        //     enemy.color = 'black'
-        //     enemy.draw()
-        // }
-        // else if (ship.collidingShip_Enemy(enemy)){
-        //     enemy.color = 'white'
-        //     enemy.draw()
-        // }
     })
+
     drawHUD(gameManager.score, 3)
 
 }
+
+
 function gameLoop() {
     context.clearRect(0, 0, cw, ch)
     update()
@@ -137,7 +118,7 @@ function renderEnemies() {
 
     for (let i = 0; i < row; i++) {
         for (let j = 0; j < col; j++) {
-            const enemy = new Enemy(context, j * spacingX + cw, i * spacingY + 170 , 1000*100, 1);
+            const enemy = new Enemy(context, j * spacingX + cw, i * spacingY + 170, 1000, 1);
             enemies.push(enemy);
         }
     }
