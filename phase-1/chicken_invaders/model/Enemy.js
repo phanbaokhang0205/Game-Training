@@ -185,7 +185,7 @@ export class Enemy extends Collider {
     draw() {
         if (!this.isAlive) return;
         
-        if (this.state == 'walk') {
+        if (this.state == 'Walk') {
             this.numberSprites = 8
             this.loadAnimation(this.image, this.walkSprite, 1)
         }
@@ -221,7 +221,7 @@ export class Enemy extends Collider {
     }
 
     update(weapons) {
-        if (this.state == 'walk') {
+        if (this.state == 'Walk') {
             this.x -= this.speed
         }
 
