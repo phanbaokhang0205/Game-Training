@@ -106,6 +106,8 @@ function gameLoop() {
     update()
 
     draw()
+    console.log(cw);
+    console.log(ch);
 
     window.requestAnimationFrame(gameLoop)
 }
