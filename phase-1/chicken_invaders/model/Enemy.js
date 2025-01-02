@@ -14,7 +14,7 @@ export class Enemy extends Collider {
         this.imageIndex = 1;
         this.bullets = []
         
-        this.state = 'walk'
+        this.state = 'Walk'
         
         // number of sprites
         this.walkSprite = 8
@@ -40,7 +40,7 @@ export class Enemy extends Collider {
 
         // walk animation
         setInterval(()=> {
-            if(this.state == 'walk') {
+            if(this.state == 'Walk') {
                 this.currentFrame--;
             }
         }, 250)
@@ -162,7 +162,7 @@ export class Enemy extends Collider {
     // }
 
     walk() {
-        this.state = "walk";
+        this.state = "Walk";
         this.speed = 0.5;
         this.loadImage();
     }
