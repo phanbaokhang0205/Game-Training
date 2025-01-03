@@ -7,6 +7,7 @@ export class Enemy extends Collider {
         this.context = context;
         this.x = x;
         this.y = y;
+
         this.speed = 0.1;
         this.color = 'red'
         this.image = new Image;
@@ -28,7 +29,7 @@ export class Enemy extends Collider {
 
         // properties
         this.isDamaged = false
-        this.HP = HP;
+        this.HP = HP * level;
         this.DTPB = 0; // damage taken per bullet
         this.isAlive = true;
         this.level = level;
@@ -221,6 +222,8 @@ export class Enemy extends Collider {
     }
 
     update(weapons) {
+        if (!this.isAlive) return;
+
         if (this.state == 'Walk') {
             this.x -= this.speed
         }

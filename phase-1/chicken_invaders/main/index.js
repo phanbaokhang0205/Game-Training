@@ -1,18 +1,27 @@
 import { GameManager } from "../helper/GameManager.js";
 import { AudioManager } from "../helper/AudioManager.js";
 import { Enemy } from "../model/Enemy.js";
-import { Weapon } from "../model/Weapon.js";
 import { Grid } from "../model/Grid.js";
-import { Lobby } from "../model/Lobby.js";
+import { WaveManager } from "../model/WaveManager.js";
+
+/**
+ * TODO: 
+    * Set up CD (cooldown) for weapons.
+    * Set up level for game (Wave 1, wave 2, final).
+    * Create spawn enemy function.
+ */
+
 let canvas;
 let context;
 let cw;
 let ch;
 let gameManager;
-let enemies = [];
-
+let waveManager;
 let grid;
 
+// 
+let enemies;
+let weapons;
 
 // audio
 let get_star
@@ -26,11 +35,24 @@ function init() {
     cw = canvas.width
     ch = canvas.height
 
-    // enemies
-    renderEnemies()
-
     // status game
     gameManager = new GameManager()
+
+    // enemies
+    // renderEnemies()
+    waveManager = new WaveManager(context, gameManager.score)
+    waveManager.renderEnemy()
+    // waveManager.renderWave()
+    
+    waveManager.renderEnemy()
+    setInterval(()=> {
+        waveManager.renderEnemy()
+        console.log(enemies.length + 1);
+    }, 3500)
+
+    // setInterval(() => {
+    //     gameManager.score += 1
+    // }, 1000)
 
     // grid
     grid = new Grid(6, 9, context, cw, ch)
@@ -45,8 +67,11 @@ function init() {
     requestAnimationFrame(gameLoop)
 }
 function update() {
-    enemies = enemies.filter(enemy => enemy.isAlive);
-    let weapons = grid.weapons.filter(weapon => weapon.isAlive);
+    enemies = waveManager.enemies.filter(enemy => enemy.isAlive);
+    weapons = grid.weapons.filter(weapon => weapon.isAlive);
+
+    let kills = waveManager.enemies.filter(enemy => !enemy.isAlive)
+    gameManager.score = kills.length;
 
     // Cập nhật Weapons và kiểm tra va chạm
     weapons.forEach(weapon => {
@@ -106,26 +131,9 @@ function gameLoop() {
     update()
 
     draw()
-    console.log(cw);
-    console.log(ch);
 
     window.requestAnimationFrame(gameLoop)
 }
-
-function renderEnemies() {
-    let col = 1; // Số cột
-    let row = 5; // Số hàng
-    let spacingX = 100; // Khoảng cách giữa các cột (trục X)
-    let spacingY = 120; // Khoảng cách giữa các hàng (trục Y)
-
-    for (let i = 0; i < row; i++) {
-        for (let j = 0; j < col; j++) {
-            const enemy = new Enemy(context, j * spacingX + cw, i * spacingY + 170, 1000, 1);
-            enemies.push(enemy);
-        }
-    }
-}
-
 
 
 function drawHUD(score, lives) {

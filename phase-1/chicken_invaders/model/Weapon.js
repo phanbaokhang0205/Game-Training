@@ -103,7 +103,7 @@ export class Weapon extends Collider {
             // Reset trạng thái `isDamaged` sau 2 giây
             setTimeout(() => {
                 this.isDamaged = false;
-            }, 600);
+            }, 550);
         }
     }
 
