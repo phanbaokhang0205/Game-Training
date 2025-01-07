@@ -43,11 +43,10 @@ function init() {
     waveManager = new WaveManager(context, gameManager.score)
     waveManager.renderEnemy()
     // waveManager.renderWave()
-    
+
     waveManager.renderEnemy()
-    setInterval(()=> {
+    setInterval(() => {
         waveManager.renderEnemy()
-        console.log(enemies.length + 1);
     }, 3500)
 
     // setInterval(() => {
@@ -82,7 +81,7 @@ function update() {
     enemies.forEach(enemy => {
         enemy.update(grid.weapons);
     });
-
+    
     // Kiểm tra va chạm giữa Weapons và Enemies
     checkCollisions(grid.weapons, enemies);
 
@@ -90,29 +89,29 @@ function update() {
 
 function checkCollisions(weapons, enemies) {
     weapons.forEach(weapon => {
-        weapon.bullets.forEach(bullet => {
+        weapon.bullets.forEach((bullet, bulletIndex) => {
             enemies.forEach(enemy => {
-                if (bullet.checkCollision(enemy)) {
-                    // vien dan bien mat
-                    bullet.visible = false;
-                    // - HP enemy
-                    enemy.isDamaged = true;
-                    enemy.DTPB = bullet.damage;
-                    enemy.HP -= enemy.DTPB
-                }
+                // if (bullet.checkCollision(enemy)) {
+                //     // - HP enemy
+                //     enemy.isDamaged = true;
+                //     enemy.DTPB = bullet.damage;
+                //     enemy.HP -= enemy.DTPB
+                //     console.log(enemy.HP);
+                //     weapon.bullets.splice(bulletIndex, 1)
+                // }
 
-                if (enemy.checkCollision(weapon)) {
-                    weapon.decreaseHP(enemy.damage); // Giảm 1 HP mỗi lần
-                }
+                // if (enemy.checkCollision(weapon)) {
+                //     weapon.decreaseHP(enemy.damage); // Giảm 1 HP mỗi lần
+                // }
             });
         });
     });
 }
 
+const backgroundImage = new Image();
+backgroundImage.src = '../img/Far_Future_Lawn.jpg'; // Đường dẫn tới ảnh
 
 function draw() {
-    const backgroundImage = new Image();
-    backgroundImage.src = '../img/Far_Future_Lawn.jpg'; // Đường dẫn tới ảnh
     context.drawImage(backgroundImage, 0, 0, cw, ch);
     grid.draw()
     grid.drawWeaponIcon()
@@ -125,13 +124,15 @@ function draw() {
 
 }
 
-
+window.dt = 0;
+let lastTime = performance.now()
 function gameLoop() {
-    context.clearRect(0, 0, cw, ch)
     update()
 
     draw()
-
+    let now = performance.now()
+    window.dt = now - lastTime;
+    lastTime = now;
     window.requestAnimationFrame(gameLoop)
 }
 

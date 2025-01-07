@@ -31,7 +31,7 @@ export class WaveManager {
         // Chỉ render trong 5 rows dưới cùng, bỏ row đầu tiên
         const randomRow = Math.floor(Math.random() * 5) + 1;
 
-        const paddingY = 50; // Padding trên trục y
+        const paddingY = 5; // Padding trên trục y
 
         // Tọa độ góc trên trái của cell
         const cellY = randomRow * this.cellHeight;
@@ -39,7 +39,7 @@ export class WaveManager {
         const centerY = cellY + (this.cellHeight / 2) - (this.enemyHeight / 2) + paddingY;
 
         // Tạo enemy tại vị trí random
-        const enemy = new Enemy(this.context, this.cw, centerY, 1000, 1);
+        const enemy = new Enemy(this.context, this.cw - 50, centerY, 1000, 1);
         this.enemies.push(enemy);
     }
 

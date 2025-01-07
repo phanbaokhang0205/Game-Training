@@ -26,5 +26,3 @@ export class CollisionManager {
         }
     }
 }
-
-// const collisionManager = new CollisionManager();

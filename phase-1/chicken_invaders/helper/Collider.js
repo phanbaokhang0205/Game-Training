@@ -1,24 +1,20 @@
 export class Collider {
-    constructor(x, y) {
+    constructor(x, y, onCollide) {
         this.x = x;
         this.y = y;
-        this.width = 0;
-        this.height = 0;
+        this.isColliding = false;
+        this.onCollide = onCollide
     }
 
     checkCollision(other) {
-        if (other instanceof Collider) {
-            return (
-                this.x - this.width / 2 < other.x + other.width / 2 &&
-                this.x + this.width / 2 > other.x - other.width / 2 &&
-                this.y - this.height / 2 < other.y + other.height / 2 &&
-                this.y + this.height / 2 > other.y - other.height / 2
-            );
-        }
-        return false;
+        throw new Error("checkCollision() must be implemented in a subclass");
     }
 
     onCollision(other) {
-        console.log("Collision detected with:", other);
+        if (!this.isColliding) {
+            this.isColliding = true;
+            this.onCollide?.(other)
+        }
     }
 }
+
