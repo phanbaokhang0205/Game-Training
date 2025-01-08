@@ -1,13 +1,15 @@
 import { Bullet } from "./Bullet.js";
 import { AudioManager } from "../helper/AudioManager.js";
+import { Collider } from "../helper/Collider.js";
+import RectCollider from "../helper/RectCollider.js";
 
-export class Weapon{
+export class Weapon {
     constructor(context, x, y, imgSrc, idleSprite, shootSprite, level, isShoot, HP) {
         this.context = context;
         this.x = x;
         this.y = y;
         this.imgSrc = imgSrc;
-        this.src = `../img/new_weapon/${this.imgSrc}/idle_1.png`
+        this.src = `../img/weapon/${this.imgSrc}/idle_1.png`
         this.idleSprite = idleSprite
         this.shootSprite = shootSprite;
 
@@ -26,17 +28,16 @@ export class Weapon{
 
         // sprite
         this.imageIndex = 1; // Chỉ số ảnh ban đầu
+        this.width = 80;
+        this.height = 80;
 
         // audio
         this.au_shooting = new AudioManager()
 
         // load image
-        this.numberSprites = 4;
-        this.currentFrame = 0;
+        // this.numberSprites = 14;
+        // this.currentFrame = 0;
         this.loadImage()
-
-        // collider
-        this.collider = null;
 
         // sprite bullet
         let bulletSprite = 1;
@@ -46,6 +47,9 @@ export class Weapon{
                 b.changeImage(bulletSprite);
             })
         }, 50);
+
+        // collider
+        this.collider = null;
 
         // Tốc độ bắn tùy thuộc vào level
         if (!this.isShoot) return
@@ -63,14 +67,17 @@ export class Weapon{
 
         setInterval(() => {
             if (this.state === "idle") {
-                this.currentFrame++
+                this.imageIndex = (this.imageIndex % this.idleSprite) + 1;
             }
+            this.loadImage();
+
         }, 150);
 
         setInterval(() => {
             if (this.state === "shoot") {
-                this.currentFrame++
+                this.imageIndex = (this.imageIndex % this.shootSprite) + 1;
             }
+            this.loadImage();
 
         }, 100);
     }
@@ -105,26 +112,40 @@ export class Weapon{
 
     loadImage() {
         if (this.state == 'idle') {
-            this.image.src = `../img/new_weapon/${this.imgSrc}/Idle.png`;
+            this.image.src = `../img/weapon/${this.imgSrc}/idle_${this.imageIndex}.png`;
 
         } else if (this.state == 'shoot') {
-            this.image.src = `../img/new_weapon/${this.imgSrc}/Shoot.png`;
+            this.image.src = `../img/weapon/${this.imgSrc}/shoot_${this.imageIndex}.png`;
         }
         this.image.onload = () => {
-            if (this.level === 3) {
-                this.width = this.image.width / this.numberSprites
-                this.height = this.image.height
+            if (this.level === 1) {
+                this.width = this.image.width / 1.2
+                this.height = this.image.height / 1.2
+            }
+            else if (this.level === 2) {
+                this.width = this.image.width / 1.5
+                this.height = this.image.height / 1.5
             }
             else {
-                this.width = (this.image.width / this.numberSprites) * 1.5
-                this.height = (this.image.height) * 1.5
+                this.width = this.image.width / 1.7
+                this.height = this.image.height / 1.7
             }
 
-            
+            this.collider = new RectCollider(
+                this.x, this.y,
+                this.width, this.height,
+                this.onCollision.bind(this)
+            )
+
+
         };
         this.image.onerror = () => {
             console.error("Failed to load weapon image");
         };
+    }
+
+    onCollision(other) {
+
     }
 
     loadAnimation(sprite, cols, rows) {
@@ -162,8 +183,8 @@ export class Weapon{
         this.state = "shoot"; // Chuyển sang trạng thái bắn
         this.loadImage();
 
-        // const bullet = new Bullet(this.context, this.x, this.y, 'weapon', this.level * 1);
-        // this.bullets.push(bullet)
+        const bullet = new Bullet(this.context, this.x, this.y + (this.height / 2), this.imgSrc, this.level * 1);
+        this.bullets.push(bullet)
         this.au_shooting.loadSound('shooting_4', '../audio/shooting_4.mp3')
         this.au_shooting.playSound('shooting_4')
 
@@ -174,44 +195,26 @@ export class Weapon{
         }, 400);
     }
 
-    draw() {
+    draw(x = this.x, y = this.y) {
         if (!this.isAlive) return;
 
-        if (this.state == 'idle') {
-            this.numberSprites = 4
-            this.loadAnimation(this.image, 4, 1)
-        }
-        if (this.state == 'shoot') {
-            if (this.level === 3) {
-                this.numberSprites = 4
-                this.loadAnimation(this.image, 4, 1)
-            }
-            else {
-                this.numberSprites = 6
-                this.loadAnimation(this.image, 6, 1)
-            }
-        }
-        // if (this.image.complete) {
-        //     this.context.drawImage(
-        //         this.image,              // Ảnh nguồn
-        //         x - this.width / 2, // Tọa độ x để vẽ (canh giữa)
-        //         y - this.height / 2,// Tọa độ y để vẽ (canh giữa)
-        //         this.width,              // Chiều rộng vẽ
-        //         this.height              // Chiều cao vẽ
-        //     );
+        if (this.image.complete) {
+            this.context.drawImage(
+                this.image,              // Ảnh nguồn
+                x, // Tọa độ x để vẽ (canh giữa)
+                y,// Tọa độ y để vẽ (canh giữa)
+                this.width,              // Chiều rộng vẽ
+                this.height              // Chiều cao vẽ
+            );
 
-        //     // Vẽ thanh máu
-        //     this.context.fillStyle = "green";
-        //     const hpBarWidth = (this.width * this.HP) / 100; // Giả sử max HP là 100
-        //     this.context.fillRect(this.x - this.width / 2, this.y - this.height / 2 - 10, hpBarWidth, 5);
+            // Vẽ thanh máu
+            this.context.fillStyle = "green";
+            const hpBarWidth = (this.width * this.HP) / 100; // Giả sử max HP là 100
+            this.context.fillRect(this.x, this.y - 10, hpBarWidth, 5);
 
-        //     // this.drawHitBox();
-        // }
-        // draw bullets
-        // Vẽ thanh máu
-        // this.context.fillStyle = "green";
-        // const hpBarWidth = ((this.width) * this.HP) / 20; // Giả sử max HP là 1000
-        // this.context.fillRect(this.x, this.y - 10, hpBarWidth, 5);
+            // this.drawHitBox();
+        }
+
 
         this.bullets.forEach(bullet => {
             bullet.draw()
@@ -234,25 +237,14 @@ export class Weapon{
     }
 
     update(enemies) {
-        enemies.forEach(e => {
-            this.bullets.forEach((bullet, index) => {
-                if (bullet.onCollision(e)) {
+        this.bullets.forEach((bullet, index) => {
+            enemies.forEach(e => {
+                if (bullet.onCollision(e, this.bullets, index)) {
                     this.bullets.splice(index, 1)
+                    console.log("oke");
                 }
-                bullet.update(e)
             });
+            bullet.update()
         })
     }
-
-    // collidingBullet_Enemy(other) {
-    //     this.bullets.forEach((b) => {
-    //         if (b.checkCollision(other)) {
-    //             this.au_hitEnemy.loadSound('pipe_hit', '../audio/pipe_hit.mp3')
-    //             this.au_hitEnemy.playSound('pipe_hit')
-    //             return true
-    //         }
-    //     })
-
-    //     return false
-    // }
 }

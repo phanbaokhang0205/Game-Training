@@ -203,23 +203,9 @@ export class Enemy {
             this.x -= this.speed
         }
 
-        // Kiểm tra va chạm với Weapon
-        // weapons.forEach(weapon => {
-        //     if (this.checkCollision(weapon) && this.state !== 'attack') {
-        //         this.targetWeapons = weapon
-        //         this.attack()
-        //     }
-        // })
-
-        // Kiểm tra nếu đang tấn công một Weapon
-        // if (this.targetWeapons) {
-        //     // Nếu Weapon đã chết, trở về trạng thái "walk"
-        //     if (!this.targetWeapons.isAlive) {
-        //         this.targetWeapons = null
-        //         this.walk()
-        //     }
-        //     return // Không kiểm tra các Weapon của các Enemy khác chỉ kiểm tra đối với weapon mà Enemy va chạm
-        // }
+        weapons.forEach(weapon => {
+            this.onCollision(weapon)
+        });
 
         // Kiem tra trang thai alive 
         // **Chưa được**
@@ -230,10 +216,21 @@ export class Enemy {
     onCollision(weapon) {
         if (!this.collider || !weapon.collider) return
 
-        if (this.collider.checkCollision(weapon.collider)) {
-            
+        if (this.collider.checkCollision(weapon.collider) && this.state !== 'attack') {
+            // Kiểm tra va chạm với Weapon
+            // weapons.forEach(weapon => {
+            this.targetWeapons = weapon.collider
+            this.attack()
+        }
 
-            return true
+        // Kiểm tra nếu đang tấn công một Weapon
+        if (this.targetWeapons) {
+            // Nếu Weapon đã chết, trở về trạng thái "walk"
+            if (!this.targetWeapons.isAlive) {
+                this.targetWeapons = null
+                this.walk()
+            }
+            return // Không kiểm tra các Weapon của các Enemy khác chỉ kiểm tra đối với weapon mà Enemy va chạm
         }
     }
 

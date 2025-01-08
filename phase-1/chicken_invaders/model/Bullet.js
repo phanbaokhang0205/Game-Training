@@ -8,7 +8,7 @@ export class Bullet {
         this.canvas = this.context.canvas;
         this.x = x;
         this.y = y;
-        this.speed = 10;
+        this.speed = 20;
         this.image = new Image;
 
         this.au_hitEnemy = new AudioManager()
@@ -17,6 +17,7 @@ export class Bullet {
         this.damage = damage;
 
         // sprite
+        this.imageIndex = 1; // Chỉ số ảnh ban đầu
         this.loadImage();
 
         // collider
@@ -24,10 +25,10 @@ export class Bullet {
     }
 
     loadImage() {
-        this.image.src = `../img/new_weapon/${this.belongTo}/bullet.png`;
+        this.image.src = `../img/bullet/bullet1/bullet1_${this.imageIndex}.png`;
         this.image.onload = () => {
-            this.width = this.image.width;     // Chiều rộng cố định của ảnh bullet
-            this.height = this.image.height;
+            this.width = this.image.width / 4;     // Chiều rộng cố định của ảnh bullet
+            this.height = this.image.height / 4;
 
             this.collider = new RectCollider(
                 this.x, this.y,
@@ -42,9 +43,14 @@ export class Bullet {
 
     }
 
-    update(other) {
+    changeImage(index) {
+        // Cập nhật chỉ số ảnh và load ảnh mới
+        this.imageIndex = index;
+        this.loadImage();
+    }
+
+    update() {
         this.x += this.speed / window.dt;
-        this.onCollision(other)
     }
 
     onCollision(enemy) {

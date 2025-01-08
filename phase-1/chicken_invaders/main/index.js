@@ -77,35 +77,16 @@ function update() {
         weapon.update(enemies);
     });
 
+    
+
     // Cập nhật Enemies và kiểm tra va chạm
     enemies.forEach(enemy => {
         enemy.update(grid.weapons);
     });
     
-    // Kiểm tra va chạm giữa Weapons và Enemies
-    checkCollisions(grid.weapons, enemies);
+    // // Kiểm tra va chạm giữa Weapons và Enemies
+    // checkCollisions(grid.weapons, enemies);
 
-}
-
-function checkCollisions(weapons, enemies) {
-    weapons.forEach(weapon => {
-        weapon.bullets.forEach((bullet, bulletIndex) => {
-            enemies.forEach(enemy => {
-                // if (bullet.checkCollision(enemy)) {
-                //     // - HP enemy
-                //     enemy.isDamaged = true;
-                //     enemy.DTPB = bullet.damage;
-                //     enemy.HP -= enemy.DTPB
-                //     console.log(enemy.HP);
-                //     weapon.bullets.splice(bulletIndex, 1)
-                // }
-
-                // if (enemy.checkCollision(weapon)) {
-                //     weapon.decreaseHP(enemy.damage); // Giảm 1 HP mỗi lần
-                // }
-            });
-        });
-    });
 }
 
 const backgroundImage = new Image();
