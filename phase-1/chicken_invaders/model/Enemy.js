@@ -175,17 +175,17 @@ export class Enemy {
     //     }, 120 * 3);
     // }
 
-    walk() {
-        this.state = "Walk";
-        this.speed = 0.5;
-        this.loadImage();
-    }
+    // walk() {
+    //     this.state = "Walk";
+    //     this.speed = 0.5;
+    //     this.loadImage();
+    // }
 
-    attack() {
-        this.state = 'attack';
-        this.speed = 0;
-        this.loadImage()
-    }
+    // attack() {
+    //     this.state = 'attack';
+    //     this.speed = 0;
+    //     this.loadImage()
+    // }
 
     dead() {
         if (this.HP <= 0) {
@@ -196,16 +196,12 @@ export class Enemy {
         }
     }
 
-    update(weapons) {
+    update() {
         if (!this.isAlive) return;
 
         if (this.state == 'Walk') {
             this.x -= this.speed
         }
-
-        weapons.forEach(weapon => {
-            this.onCollision(weapon)
-        });
 
         // Kiem tra trang thai alive 
         // **Chưa được**
@@ -213,14 +209,30 @@ export class Enemy {
 
     }
 
+    // update(weapons) {
+    //     if (!this.isAlive) return;
+
+    //     if (this.state == 'Walk') {
+    //         this.x -= this.speed
+    //     }
+
+    //     weapons.forEach(weapon => {
+    //         this.onCollision(weapon)
+    //     });
+
+    //     // Kiem tra trang thai alive 
+    //     // **Chưa được**
+    //     this.dead()
+
+    // }
+
     onCollision(weapon) {
         if (!this.collider || !weapon.collider) return
 
         if (this.collider.checkCollision(weapon.collider) && this.state !== 'attack') {
-            // Kiểm tra va chạm với Weapon
-            // weapons.forEach(weapon => {
             this.targetWeapons = weapon.collider
-            this.attack()
+            this.state = 'attack'
+            this.speed = 0
         }
 
         // Kiểm tra nếu đang tấn công một Weapon
@@ -228,7 +240,8 @@ export class Enemy {
             // Nếu Weapon đã chết, trở về trạng thái "walk"
             if (!this.targetWeapons.isAlive) {
                 this.targetWeapons = null
-                this.walk()
+                this.state = 'Walk'
+                this.speed = 0.5
             }
             return // Không kiểm tra các Weapon của các Enemy khác chỉ kiểm tra đối với weapon mà Enemy va chạm
         }

@@ -74,19 +74,37 @@ function update() {
 
     // Cập nhật Weapons và kiểm tra va chạm
     weapons.forEach(weapon => {
-        weapon.update(enemies);
+        weapon.update();
     });
-
-    
 
     // Cập nhật Enemies và kiểm tra va chạm
     enemies.forEach(enemy => {
-        enemy.update(grid.weapons);
+        enemy.update();
     });
     
     // // Kiểm tra va chạm giữa Weapons và Enemies
     // checkCollisions(grid.weapons, enemies);
 
+}
+
+function checkCollision() {
+    // Bullet - Enemy
+    weapons.forEach(weapon => {
+        weapon.bullets.forEach((bullet, index) => {
+            enemies.forEach(enemy => {
+                if (bullet.onCollision(enemy)) {
+                    weapon.bullets.splice(index, 1) 
+                }
+            }) 
+        })
+    })
+
+    // Weapon - Enemy
+    enemies.forEach(enemy => {
+        weapons.forEach(weapon => {
+            enemy.onCollision(weapon)
+        })
+    })
 }
 
 const backgroundImage = new Image();
@@ -107,13 +125,18 @@ function draw() {
 
 window.dt = 0;
 let lastTime = performance.now()
+
 function gameLoop() {
     update()
 
+    checkCollision()
+
     draw()
+
     let now = performance.now()
     window.dt = now - lastTime;
     lastTime = now;
+
     window.requestAnimationFrame(gameLoop)
 }
 

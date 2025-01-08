@@ -236,15 +236,21 @@ export class Weapon {
         this.context.stroke();
     }
 
-    update(enemies) {
-        this.bullets.forEach((bullet, index) => {
-            enemies.forEach(e => {
-                if (bullet.onCollision(e, this.bullets, index)) {
-                    this.bullets.splice(index, 1)
-                    console.log("oke");
-                }
-            });
+    update() {
+        this.bullets.forEach((bullet) => {
             bullet.update()
         })
     }
+
+    // update(enemies) {
+    //     this.bullets.forEach((bullet, index) => {
+    //         enemies.forEach(e => {
+    //             if (bullet.onCollision(e)) {
+    //                 this.bullets.splice(index, 1)
+                    
+    //             }
+    //         });
+    //         bullet.update()
+    //     })
+    // }
 }

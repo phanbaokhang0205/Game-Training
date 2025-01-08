@@ -84,7 +84,7 @@ export class Grid {
             if (selectedWeapon) {
                 this.draggingWeapon = new Weapon(
                     this.context,
-                    mouseX, mouseY,
+                    mouseX - 40, mouseY - 30,
                     selectedWeapon.imgSrc,
                     selectedWeapon.idleSprite, selectedWeapon.shootSprite,
                     selectedWeapon.level, true, 100
@@ -95,8 +95,8 @@ export class Grid {
         this.canvas.addEventListener("mousemove", (e) => {
             if (this.draggingWeapon) {
                 // Cập nhật vị trí của plant đang kéo
-                this.draggingWeapon.x = e.offsetX;
-                this.draggingWeapon.y = e.offsetY;
+                this.draggingWeapon.x = e.offsetX - 40;
+                this.draggingWeapon.y = e.offsetY - 30;
             }
         });
 
