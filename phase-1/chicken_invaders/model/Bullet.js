@@ -1,17 +1,24 @@
 import { AudioManager } from "../helper/AudioManager.js";
+import { CollisionManager } from "../helper/CollisionManager.js";
 import RectCollider from "../helper/RectCollider.js";
 import { Enemy } from "./Enemy.js";
 
 export class Bullet {
-    constructor(context, x, y, belongTo, damage) {
-        this.context = context;
-        this.canvas = this.context.canvas;
-        this.x = x;
-        this.y = y;
-        this.speed = 20;
+    constructor(x, y, belongTo, damage) {
+        // this.x = x;
+        // this.y = y;
+        this.speed = 200;
         this.image = new Image;
+        this.collider = new RectCollider(
+            x, y,
+            1, 1,
+            this.onCollision.bind(this), this
+        );
+
+        CollisionManager.instance.addCollider(this.collider)
 
         this.au_hitEnemy = new AudioManager()
+        this.au_hitEnemy.loadSound('pipe_hit', '../audio/pipe_hit.mp3')
 
         this.belongTo = belongTo;
         this.damage = damage;
@@ -20,8 +27,8 @@ export class Bullet {
         this.imageIndex = 1; // Chỉ số ảnh ban đầu
         this.loadImage();
 
-        // collider
-        this.collider = null;
+        this.isHit = false;
+
     }
 
     loadImage() {
@@ -30,11 +37,9 @@ export class Bullet {
             this.width = this.image.width / 4;     // Chiều rộng cố định của ảnh bullet
             this.height = this.image.height / 4;
 
-            this.collider = new RectCollider(
-                this.x, this.y,
-                this.width, this.height,
-                this.onCollision.bind(this)
-            )
+            this.collider.width = this.width;
+            this.collider.height = this.height;
+
 
         };
         this.image.onerror = () => {
@@ -50,28 +55,23 @@ export class Bullet {
     }
 
     update() {
-        this.x += this.speed / window.dt;
+        this.x += this.speed * window.dt / 1000;
+        // this.y += 0;
+        // this.collider.updatePosition(this.x, this.y);
     }
 
-    onCollision(enemy) {
-        if (!this.collider || !enemy.collider) return
-
-        if (this.collider.checkCollision(enemy.collider)) {
-            this.au_hitEnemy.loadSound('pipe_hit', '../audio/pipe_hit.mp3')
+    onCollision(otherCollider) {
+        if (otherCollider.owner instanceof Enemy) {
             this.au_hitEnemy.playSound('pipe_hit')
-            enemy.isDamaged = true;
-            enemy.DTPB = this.damage;
-            enemy.HP -= enemy.DTPB
-            console.log(enemy.HP);
-
-            return true
+            this.isHit = true;
+            CollisionManager.instance.removeCollider(this.collider);
         }
     }
 
 
-    draw() {
+    draw(context) {
         if (this.image.complete) {
-            this.context.drawImage(
+            context.drawImage(
                 this.image,              // Ảnh nguồn
                 this.x, // Tọa độ x để vẽ (canh giữa)
                 this.y,// Tọa độ y để vẽ (canh giữa)
@@ -79,22 +79,35 @@ export class Bullet {
                 this.height              // Chiều cao vẽ
             );
 
-            this.drawHitBox();
+            this.drawHitBox(context);
         }
     }
 
-    drawHitBox() {
-        this.context.beginPath();
-        this.context.strokeStyle = 'blue';
-        this.context.strokeRect(
+    drawHitBox(context) {
+        context.beginPath();
+        context.strokeStyle = 'blue';
+        context.strokeRect(
             this.x,
             this.y,
             this.width,
             this.height
         );
-        this.context.stroke();
+        context.stroke();
     }
 
+    get x() {
+        return this.collider.x;
+    }
 
+    get y() {
+        return this.collider.y;
+    }
 
+    set x(value) {
+        this.collider.x = value;
+    }
+
+    set y(value) {
+        this.collider.y = value;
+    }
 }

@@ -3,12 +3,17 @@ import { AudioManager } from "../helper/AudioManager.js";
 import { Enemy } from "../model/Enemy.js";
 import { Grid } from "../model/Grid.js";
 import { WaveManager } from "../model/WaveManager.js";
+import { CollisionManager } from "../helper/CollisionManager.js";
 
 /**
  * TODO: 
     * Set up CD (cooldown) for weapons.
     * Set up level for game (Wave 1, wave 2, final).
     * Create spawn enemy function.
+ */
+
+/**
+ * 
  */
 
 let canvas;
@@ -18,6 +23,7 @@ let ch;
 let gameManager;
 let waveManager;
 let grid;
+let colliderManager;
 
 // 
 let enemies;
@@ -37,21 +43,16 @@ function init() {
 
     // status game
     gameManager = new GameManager()
+    colliderManager = new CollisionManager()
 
-    // enemies
     // renderEnemies()
     waveManager = new WaveManager(context, gameManager.score)
     waveManager.renderEnemy()
-    // waveManager.renderWave()
 
     waveManager.renderEnemy()
     setInterval(() => {
         waveManager.renderEnemy()
-    }, 3500)
-
-    // setInterval(() => {
-    //     gameManager.score += 1
-    // }, 1000)
+    }, 100000000)
 
     // grid
     grid = new Grid(6, 9, context, cw, ch)
@@ -59,64 +60,38 @@ function init() {
     // Audio
     get_star = new AudioManager();
     game_over = new AudioManager();
-    // game_over.loadSound('gameOver', '../audio/');
-
 
 
     requestAnimationFrame(gameLoop)
 }
+
 function update() {
     enemies = waveManager.enemies.filter(enemy => enemy.isAlive);
-    weapons = grid.weapons.filter(weapon => weapon.isAlive);
+    // weapons = grid.weapons.filter(weapon => weapon.isAlive);
 
     let kills = waveManager.enemies.filter(enemy => !enemy.isAlive)
     gameManager.score = kills.length;
 
+    grid.updateWeapon()
     // Cập nhật Weapons và kiểm tra va chạm
-    weapons.forEach(weapon => {
-        weapon.update();
-    });
+    // weapons.forEach(weapon => {
+    //     weapon.update();
+    // });
 
-    // Cập nhật Enemies và kiểm tra va chạm
-    enemies.forEach(enemy => {
-        enemy.update();
-    });
-    
-    // // Kiểm tra va chạm giữa Weapons và Enemies
-    // checkCollisions(grid.weapons, enemies);
-
-}
-
-function checkCollision() {
-    // Bullet - Enemy
-    weapons.forEach(weapon => {
-        weapon.bullets.forEach((bullet, index) => {
-            enemies.forEach(enemy => {
-                if (bullet.onCollision(enemy)) {
-                    weapon.bullets.splice(index, 1) 
-                }
-            }) 
-        })
-    })
-
-    // Weapon - Enemy
-    enemies.forEach(enemy => {
-        weapons.forEach(weapon => {
-            enemy.onCollision(weapon)
-        })
-    })
+    waveManager.updateWave()
 }
 
 const backgroundImage = new Image();
 backgroundImage.src = '../img/Far_Future_Lawn.jpg'; // Đường dẫn tới ảnh
 
 function draw() {
+
     context.drawImage(backgroundImage, 0, 0, cw, ch);
     grid.draw()
     grid.drawWeaponIcon()
 
     enemies.forEach(enemy => {
-        enemy.draw()
+        enemy.draw(context)
     })
 
     drawHUD(gameManager.score, 3)
@@ -129,13 +104,14 @@ let lastTime = performance.now()
 function gameLoop() {
     update()
 
-    checkCollision()
+    CollisionManager.instance.checkCollisions();
 
     draw()
 
     let now = performance.now()
     window.dt = now - lastTime;
     lastTime = now;
+    
 
     window.requestAnimationFrame(gameLoop)
 }

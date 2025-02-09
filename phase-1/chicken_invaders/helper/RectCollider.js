@@ -1,8 +1,8 @@
 import { Collider } from "./Collider.js";
 
 export default class RectCollider extends Collider {
-    constructor(x, y, width, height, onCollide) {
-        super(x, y, onCollide);
+    constructor(x, y, width, height, onCollide, owner) {
+        super(x, y, onCollide, owner);
         this.width = width;
         this.height = height;
     }
@@ -17,5 +17,10 @@ export default class RectCollider extends Collider {
             );
         }
         return false;
+    }
+
+    updatePosition(x, y) {
+        this.x = x;
+        this.y = y;
     }
 }

@@ -20,7 +20,7 @@ export class WaveManager {
         this.enemies = [];
         this.score = score;
         this.wave = 1;
-        this.renderTime = 3500;
+        this.renderTime = 100000;
 
     }
 
@@ -39,7 +39,7 @@ export class WaveManager {
         const centerY = cellY + (this.cellHeight / 2) - (this.enemyHeight / 2) + paddingY;
 
         // Tạo enemy tại vị trí random
-        const enemy = new Enemy(this.context, this.cw - 50, centerY, 1000, 1);
+        const enemy = new Enemy(this.cw - 50, centerY, 1000, 1);
         this.enemies.push(enemy);
     }
 
@@ -92,6 +92,22 @@ export class WaveManager {
             this.enemyInterval = setInterval(() => {
                 console.log("Enemy 3 was generated.");
             }, this.renderTime);
+        }
+    }
+
+    updateWave() {
+        let enemyList = []
+        this.enemies.forEach(enemy => {
+            enemy.update()
+            if (!enemy.isAlive) {
+                enemyList.push(enemy)
+            }
+        })
+
+        if (enemyList.length > 0) {
+            enemyList.forEach(e => {
+                this.enemies.splice(this.enemies.indexOf(e), 1)
+            })
         }
     }
 

@@ -1,9 +1,10 @@
 export class Collider {
-    constructor(x, y, onCollide) {
+    constructor(x, y, onCollide, owner) {
         this.x = x;
         this.y = y;
         this.isColliding = false;
-        this.onCollide = onCollide
+        this.onCollide = onCollide;
+        this.owner = owner;
     }
 
     checkCollision(other) {
@@ -11,10 +12,8 @@ export class Collider {
     }
 
     onCollision(other) {
-        if (!this.isColliding) {
-            this.isColliding = true;
-            this.onCollide?.(other)
-        }
+        this.isColliding = true;
+        this.onCollide?.(other)
     }
 }
 

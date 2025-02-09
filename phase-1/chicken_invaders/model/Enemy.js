@@ -1,23 +1,20 @@
-import { Collider } from "../helper/Collider.js";
 import RectCollider from "../helper/RectCollider.js";
+import { CollisionManager } from "../helper/CollisionManager.js";
+import { Weapon } from "./Weapon.js";
 import { Bullet } from "./Bullet.js";
 
-export class Enemy {
-    constructor(context, x, y, HP, level) {
-        this.context = context;
-        this.x = x;
-        this.y = y;
 
+export class Enemy {
+    constructor(x, y, HP, level) {
         this.speed = 0.1;
-        this.color = 'red'
+        this.color = 'red';
         this.image = new Image;
 
         this.imageIndex = 1;
         this.bullets = []
-        this.width;
-        this.height;
 
         this.state = 'Walk'
+        this.isAttack = false;
 
         // number of sprites
         this.walkSprite = 8
@@ -31,18 +28,25 @@ export class Enemy {
 
         // properties
         this.isDamaged = false
+
         // this.HP = HP * level;
-        this.HP = 20;
+        this.HP = 40;
         this.DTPB = 0; // damage taken per bullet
         this.isAlive = true;
         this.level = level;
         this.damage = this.level * 10
-        this.targetWeapons = null;
+        // this.targetWeapons = null;
 
-        // load image
-        this.loadImage();
+
         // collider
-        this.Collider = null;
+        this.collider = new RectCollider(
+            x, y,
+            1, 1,
+            this.onCollision.bind(this), this
+        );
+
+        CollisionManager.instance.addCollider(this.collider)
+
 
         // walk animation
         setInterval(() => {
@@ -58,25 +62,8 @@ export class Enemy {
             }
         }, 250);
 
-        // hurt animation
-        // setInterval(() => {
-        //     if (this.state === "hurt") {
-        //         this.imageIndex = (this.imageIndex % this.hurtSprite) + 1;
-        //     }
-        //     this.loadImage();
-        // }, 110);
-        // setInterval(() => this.isHurt(), 1)
 
-
-
-        // dead
-        // **Chưa được**
-        // setInterval(() => {
-        //     if (this.state === "dead") {
-        //         this.imageIndex = (this.imageIndex % this.deadSprite) + 1;
-        //     }
-        //     this.loadImage();
-        // }, 300);
+        this.loadImage();
     }
 
     loadImage() {
@@ -86,14 +73,8 @@ export class Enemy {
             this.width = this.image.width / this.numberSprites; // Đảm bảo width được gán đúng
             this.height = this.image.height;
 
-            // Khởi tạo collider sau khi width và height có giá trị
-            this.collider = new RectCollider(
-                this.x,
-                this.y,
-                this.width,
-                this.height,
-                this.onCollision.bind(this)
-            );
+            this.collider.width = this.width;
+            this.collider.height = this.height;
 
         };
 
@@ -103,7 +84,7 @@ export class Enemy {
     }
 
 
-    loadAnimation(sprite, cols, rows) {
+    loadAnimation(sprite, cols, rows, context) {
 
         let maxFrame = cols * rows - 1;
 
@@ -122,7 +103,7 @@ export class Enemy {
         let row = Math.floor(this.currentFrame / cols);
 
         // Clear and draw
-        this.context.drawImage(
+        context.drawImage(
             sprite,
             column * frameWidth, // Tọa độ x của khung hình
             row * frameHeight, // Tọa độ y của khung hình
@@ -136,154 +117,111 @@ export class Enemy {
 
     }
 
-    shoot() {
-        this.state = "shoot"; // Chuyển sang trạng thái bắn
-        this.imageIndex = 1; // Reset chỉ số ảnh cho trạng thái bắn
-        this.speed = 0; // Đứng yên để bắn
-        this.loadImage();
-
-        const bullet = new Bullet(this.context, this.x - 50, this.y, "enemy");
-        this.bullets.push(bullet)
-        // this.au_shooting.loadSound('shooting_4', '../audio/shooting_4.mp3')
-        // this.au_shooting.playSound('shooting_4')
-
-
-        setTimeout(() => {
-            this.state = "walk";
-            this.imageIndex = 1;
-            this.speed = 0.5;
-            this.loadImage();
-        }, 1000);
-    }
-
-    // isHurt() {
-    //     if (!this.isDamaged) return
-
-    //     this.state = 'hurt';
-    //     this.imageIndex = 1;
-    //     this.speed = 0;
-    //     this.loadImage()
-    //     this.isDamaged = false
-
-    //     this.HP -= this.DTPB;
-
-    //     setTimeout(() => {
-    //         this.state = "walk";
-    //         this.imageIndex = 1;
-    //         this.speed = 0.5;
-    //         this.loadImage();
-    //     }, 120 * 3);
-    // }
-
-    // walk() {
-    //     this.state = "Walk";
-    //     this.speed = 0.5;
-    //     this.loadImage();
-    // }
-
-    // attack() {
-    //     this.state = 'attack';
-    //     this.speed = 0;
-    //     this.loadImage()
-    // }
-
     dead() {
         if (this.HP <= 0) {
             this.state = 'dead';
             this.isAlive = false;
-            this.speed = 0;
             this.loadImage()
         }
     }
 
     update() {
-        if (!this.isAlive) return;
+        // if (!this.isAlive) return;
 
-        if (this.state == 'Walk') {
-            this.x -= this.speed
+        if(!this.isAttack){
+            this.x -= this.speed;
         }
 
         // Kiem tra trang thai alive 
         // **Chưa được**
-        this.dead()
-
+        // this.dead()
     }
 
-    // update(weapons) {
-    //     if (!this.isAlive) return;
+    onCollision(otherCollider) {
+        if (otherCollider.owner instanceof Bullet) {
+            this.isDamaged = true;
+            this.DTPB = this.damage;
+            this.HP -= this.DTPB
 
-    //     if (this.state == 'Walk') {
-    //         this.x -= this.speed
-    //     }
-
-    //     weapons.forEach(weapon => {
-    //         this.onCollision(weapon)
-    //     });
-
-    //     // Kiem tra trang thai alive 
-    //     // **Chưa được**
-    //     this.dead()
-
-    // }
-
-    onCollision(weapon) {
-        if (!this.collider || !weapon.collider) return
-
-        if (this.collider.checkCollision(weapon.collider) && this.state !== 'attack') {
-            this.targetWeapons = weapon.collider
-            this.state = 'attack'
-            this.speed = 0
-        }
-
-        // Kiểm tra nếu đang tấn công một Weapon
-        if (this.targetWeapons) {
-            // Nếu Weapon đã chết, trở về trạng thái "walk"
-            if (!this.targetWeapons.isAlive) {
-                this.targetWeapons = null
-                this.state = 'Walk'
-                this.speed = 0.5
+            if (this.HP <= 0) {
+                this.isAlive = false
+                CollisionManager.instance.removeCollider(this.collider)
             }
-            return // Không kiểm tra các Weapon của các Enemy khác chỉ kiểm tra đối với weapon mà Enemy va chạm
+        } else if (otherCollider.owner instanceof Weapon) {
+            this.isAttack = true
+            // this.state = 'attack'
+            //  if (otherCollider.owner.HP < 0){
+            //     this.isAttack = false;
+            //  }
+            // if (this.state !== 'attack') {
+            // this.speed = 0
+            this.targetWeapons = otherCollider.owner
+            // console.log(this.targetWeapons);
+            // }
+
+            if (this.targetWeapons) {
+                // Nếu Weapon đã chết, trở về trạng thái "walk"
+                if (!this.targetWeapons.isAlive) {
+                    this.targetWeapons = null
+                    this.state = 'Walk'
+                    // this.speed = 0.5
+                }
+                return // Không kiểm tra các Weapon của các Enemy khác chỉ kiểm tra đối với weapon mà Enemy va chạm
+            }
         }
     }
 
-    draw() {
+    draw(context) {
         if (!this.isAlive) return;
 
         if (this.state == 'Walk') {
             this.numberSprites = 8
-            this.loadAnimation(this.image, this.walkSprite, 1)
+            this.loadAnimation(this.image, this.walkSprite, 1, context)
         }
-        if (this.state == 'attack') {
+        else if (this.state == 'attack') {
             this.numberSprites = 4
-            this.loadAnimation(this.image, this.attackSprite, 1)
+            this.loadAnimation(this.image, this.attackSprite, 1, context)
         }
-        if (this.state == 'hurt') {
+        else if (this.state == 'hurt') {
 
         }
-        if (this.state == 'dead') {
+        else if (this.state == 'dead') {
 
         }
 
         // Vẽ thanh máu
-        this.context.fillStyle = "red";
-        const hpBarWidth = ((this.width) * this.HP) / 20; // Giả sử max HP là 1000
-        this.context.fillRect(this.x, this.y - 10, hpBarWidth, 5);
+        context.fillStyle = "red";
+        const hpBarWidth = ((this.width) * this.HP) / 40; // Giả sử max HP là 1000
+        context.fillRect(this.x, this.y - 10, hpBarWidth, 5);
 
-        this.drawHitBox();
+        // this.drawHitBox(context);
     }
 
-    drawHitBox() {
-        this.context.beginPath();
-        this.context.strokeStyle = this.color;
-        this.context.strokeRect(
+    drawHitBox(context) {
+        context.beginPath();
+        context.strokeStyle = this.color;
+        context.strokeRect(
             this.x,
             this.y,
             this.width,
             this.height
         );
-        this.context.stroke();
+        context.stroke();
     }
 
+    get x() {
+        return this.collider.x;
+    }
 
+    get y() {
+        return this.collider.y;
+    }
+
+    set x(value) {
+        this.collider.x = value;
+    }
+
+    set y(value) {
+        this.collider.y = value;
+    }
 }

@@ -22,9 +22,9 @@ export class Grid {
         this.lobby = new Lobby(this.context, this.weaponItems)
 
         // Weapon Lobby
-        const weapon1 = new Weapon(this.context, this.lobby.x - this.lobby.width + 0, 0, "weapon1", 4, 4, 1, false)
-        const weapon2 = new Weapon(this.context, this.lobby.x - this.lobby.width + 200, 0, "weapon2", 6, 6, 2, false)
-        const weapon3 = new Weapon(this.context, this.lobby.x - this.lobby.width + 400, 0, "weapon3", 4, 6, 3, false)
+        const weapon1 = new Weapon(this.lobby.x - this.lobby.width + 0, 0, "weapon1", 4, 4, 1, false)
+        const weapon2 = new Weapon(this.lobby.x - this.lobby.width + 200, 0, "weapon2", 6, 6, 2, false)
+        const weapon3 = new Weapon(this.lobby.x - this.lobby.width + 400, 0, "weapon3", 4, 6, 3, false)
         this.weaponItems.push(weapon1)
         this.weaponItems.push(weapon2)
         this.weaponItems.push(weapon3)
@@ -46,7 +46,7 @@ export class Grid {
                 // Neu o co gia tri 
                 const weapon = this.grid[row][col];
                 if (weapon) {
-                    weapon.draw(weapon._x, weapon._y);
+                    weapon.draw(weapon._x, weapon._y, this.context);
                 }
             }
         }
@@ -55,7 +55,7 @@ export class Grid {
     drawWeaponIcon() {
         // Vẽ Weapon đang được kéo (nếu có)
         if (this.draggingWeapon) {
-            this.draggingWeapon.draw(this.draggingWeapon._x, this.draggingWeapon._y)
+            this.draggingWeapon.draw(this.draggingWeapon._x, this.draggingWeapon._y, this.context)
         }
 
         this.lobby.drawLobby()
@@ -83,12 +83,12 @@ export class Grid {
 
             if (selectedWeapon) {
                 this.draggingWeapon = new Weapon(
-                    this.context,
-                    mouseX - 40, mouseY - 30,
+                    mouseX, mouseY,
                     selectedWeapon.imgSrc,
                     selectedWeapon.idleSprite, selectedWeapon.shootSprite,
                     selectedWeapon.level, true, 100
                 )
+                // console.log(this.draggingWeapon);
             }
         });
 
@@ -101,6 +101,7 @@ export class Grid {
         });
 
         this.canvas.addEventListener("mouseup", (e) => {
+            
             if (this.draggingWeapon) {
                 const mouseX = e.offsetX;
                 const mouseY = e.offsetY;
@@ -108,22 +109,64 @@ export class Grid {
                 // Tính chỉ số hàng và cột dựa trên vị trí thả
                 const col = Math.floor(mouseX / this.cellWidth);
                 const row = Math.floor(mouseY / this.cellHeight);
+                console.log(this.grid[row][col]);
 
                 // Kiểm tra hợp lệ trước khi thả weapon
                 // Nếu ô trống thì mới cho thả weapon
+                /**Ban đầu */
+                // if (
+                //     row >= 0 && row < this.rows
+                //     && col >= 0 && col < this.cols
+                //     && !this.grid[row][col]
+                // ) {
+                //     this.grid[row][col] = this.draggingWeapon; // Đặt weapon vào lưới
+                //     this.weapons.push(this.draggingWeapon)
+                //     // this.draggingWeapon.isShoot = true
+                // }
+                /**Ban đầu */
+                /**fix */
                 if (
                     row >= 0 && row < this.rows
                     && col >= 0 && col < this.cols
-                    && !this.grid[row][col]
                 ) {
+                    
                     this.grid[row][col] = this.draggingWeapon; // Đặt weapon vào lưới
                     this.weapons.push(this.draggingWeapon)
-                    console.log(this.weapons);
+                    console.log(this.draggingWeapon.isAlive);
+                    // this.draggingWeapon.isShoot = true
                 }
+                /**fix */
 
                 this.draggingWeapon = null; // Ngừng kéo
+
             }
         })
+    }
+
+    updateWeapon() {
+        let weaponList = []
+        this.weapons.forEach(weapon => {
+            weapon.update()
+            if (!weapon.isAlive) {
+                weaponList.push(weapon)
+            }
+        })
+
+        if (weaponList.length > 0) {
+            weaponList.forEach(w => {
+                this.weapons.splice(this.weapons.indexOf(w), 1)
+
+                // Xóa khỏi grid
+                for (let row = 0; row < this.rows; row++) {
+                    for (let col = 0; col < this.cols; col++) {
+                        if (this.grid[row][col] === w) {
+                            this.grid[row][col] = null; // Đặt lại ô đó thành null
+                        }
+                    }
+                }
+            })
+        }
+
     }
 
 }
