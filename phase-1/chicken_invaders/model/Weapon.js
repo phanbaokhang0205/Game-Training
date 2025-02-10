@@ -14,7 +14,7 @@ export class Weapon {
         this.idleSprite = idleSprite
         this.shootSprite = shootSprite;
 
-        
+
         this.isAlive = true;
         this.level = level;
         this.isShoot = isShoot;
@@ -25,11 +25,13 @@ export class Weapon {
         this.image = new Image()
         this.bullets = []
         this.state = 'idle'
-        this.shootSpeed = 0;
+
+        this.shootingInterval = null;
+
 
         // sprite
         this.imageIndex = 1; // Chỉ số ảnh ban đầu
-        
+
 
         // audio
         this.au_shooting = new AudioManager()
@@ -52,20 +54,7 @@ export class Weapon {
         )
         CollisionManager.instance.addCollider(this.collider)
 
-        this.loadImage()
 
-        // Tốc độ bắn tùy thuộc vào level
-        if (!this.isShoot) return
-        if (this.level == 1) {
-            this.shootSpeed = 3000
-        }
-        if (this.level == 2) {
-            this.shootSpeed = 2100
-        }
-        if (this.level == 3) {
-            this.shootSpeed = 800
-        }
-        setInterval(() => this.shooting(), this.shootSpeed)
 
 
         setInterval(() => {
@@ -83,7 +72,17 @@ export class Weapon {
             this.loadImage();
 
         }, 100);
+
+        // Tốc độ bắn tùy thuộc vào level
+        if (this.isShoot) {
+            console.log("Start shooting interval");
+            setInterval(() => this.shooting(), 3000 / this.level);
+        }
+
+
+        this.loadImage()
     }
+
 
     changeImage(index) {
         // Cập nhật chỉ số ảnh và load ảnh mới
@@ -98,7 +97,7 @@ export class Weapon {
             this.isDamaged = true;
             this.DTPE = DTPE;
 
-            
+
             this.HP -= this.DTPE;
             // Kiểm tra nếu HP <= 0 thì dừng giảm máu
             if (this.HP <= 0) {
@@ -145,50 +144,19 @@ export class Weapon {
 
     onCollision(otherCollider) {
         if (otherCollider.owner instanceof Enemy) {
-            
+
             this.decreaseHP(otherCollider.owner.damage)
             if (!this.isAlive) {
                 CollisionManager.instance.removeCollider(this.collider);
                 console.log(this.collider);
             }
-        } else if (otherCollider.owner instanceof Weapon){
+        } else if (otherCollider.owner instanceof Weapon) {
             // console.log("a");
         }
     }
 
-    loadAnimation(sprite, cols, rows, context) {
-
-        let maxFrame = cols * rows - 1;
-
-        if (this.currentFrame > maxFrame) {
-            this.currentFrame = 0;
-        }
-
-        // Define the size of a frame
-        let frameWidth = this.image.width / cols;
-        let frameHeight = this.image.height / rows;
-
-        // Update rows and columns
-        let column = this.currentFrame % cols;
-        let row = Math.floor(this.currentFrame / cols);
-
-        // Clear and draw
-        context.drawImage(
-            sprite,
-            column * frameWidth, // Tọa độ x của khung hình
-            row * frameHeight, // Tọa độ y của khung hình
-            frameWidth, // Chiều rộng khung hình
-            frameHeight, // Chiều cao khung hình
-            this.x, // Tọa độ x vẽ trên canvas
-            this.y, // Tọa độ y vẽ trên canvas
-            this.width, // Chiều rộng trên canvas
-            this.height // Chiều cao trên canvas
-        );
-
-    }
-
     shooting() {
-        console.log("shoot" + this.level);
+        console.log("shooting function called");
 
         this.state = "shoot"; // Chuyển sang trạng thái bắn
         this.loadImage();
@@ -245,6 +213,10 @@ export class Weapon {
     }
 
     update() {
+        // Bắn khi được đặt
+        if (this.isShoot && !this.shootingInterval) {
+            this.shootingInterval = setInterval(() => this.shooting(), 3000 / this.level);
+        }
 
         let hitList = []
         this.bullets.forEach((bullet) => {

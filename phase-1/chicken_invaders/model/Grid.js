@@ -24,7 +24,7 @@ export class Grid {
         // Weapon Lobby
         const weapon1 = new Weapon(this.lobby.x - this.lobby.width + 0, 0, "weapon1", 4, 4, 1, false)
         const weapon2 = new Weapon(this.lobby.x - this.lobby.width + 200, 0, "weapon2", 6, 6, 2, false)
-        const weapon3 = new Weapon(this.lobby.x - this.lobby.width + 400, 0, "weapon3", 4, 6, 3, false)
+        const weapon3 = new Weapon(this.lobby.x - this.lobby.width + 400, 0, "weapon3", 4, 4, 3, false)
         this.weaponItems.push(weapon1)
         this.weaponItems.push(weapon2)
         this.weaponItems.push(weapon3)
@@ -86,9 +86,9 @@ export class Grid {
                     mouseX, mouseY,
                     selectedWeapon.imgSrc,
                     selectedWeapon.idleSprite, selectedWeapon.shootSprite,
-                    selectedWeapon.level, true, 100
+                    selectedWeapon.level, false, 100
                 )
-                // console.log(this.draggingWeapon);
+                console.log(selectedWeapon.shootSprite);
             }
         });
 
@@ -109,33 +109,23 @@ export class Grid {
                 // Tính chỉ số hàng và cột dựa trên vị trí thả
                 const col = Math.floor(mouseX / this.cellWidth);
                 const row = Math.floor(mouseY / this.cellHeight);
-                console.log(this.grid[row][col]);
+                // console.log(this.grid[row][col]);
 
                 // Kiểm tra hợp lệ trước khi thả weapon
                 // Nếu ô trống thì mới cho thả weapon
                 /**Ban đầu */
-                // if (
-                //     row >= 0 && row < this.rows
-                //     && col >= 0 && col < this.cols
-                //     && !this.grid[row][col]
-                // ) {
-                //     this.grid[row][col] = this.draggingWeapon; // Đặt weapon vào lưới
-                //     this.weapons.push(this.draggingWeapon)
-                //     // this.draggingWeapon.isShoot = true
-                // }
-                /**Ban đầu */
-                /**fix */
                 if (
                     row >= 0 && row < this.rows
                     && col >= 0 && col < this.cols
+                    && !this.grid[row][col]
                 ) {
-                    
                     this.grid[row][col] = this.draggingWeapon; // Đặt weapon vào lưới
                     this.weapons.push(this.draggingWeapon)
-                    console.log(this.draggingWeapon.isAlive);
-                    // this.draggingWeapon.isShoot = true
+                    this.draggingWeapon.isShoot = true
+
+
                 }
-                /**fix */
+                
 
                 this.draggingWeapon = null; // Ngừng kéo
 

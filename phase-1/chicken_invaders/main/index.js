@@ -6,14 +6,18 @@ import { WaveManager } from "../model/WaveManager.js";
 import { CollisionManager } from "../helper/CollisionManager.js";
 
 /**
- * TODO: 
-    * Set up CD (cooldown) for weapons.
-    * Set up level for game (Wave 1, wave 2, final).
-    * Create spawn enemy function.
- */
-
-/**
+ * TODO: BUG
+ * 1. Weapon chết nhưng không bị xóa khỏi game 
+ *  - Đã remove ra khỏi objec Collider.
+ *  - Đã xóa khỏi mảng weapons trong class Grid.
+ *  - Đã xóa khỏi ô của Grid.
+ * trong mảng của weapon thì mất nhưng vẫn nghe tiếng đạn, enemy vẫn bị dính damge.
  * 
+ * 
+ * 2. Enemy khi collide lần đầu tiên với Weapon thì chuyển state = 'attack', dù không còn Weapon nào trước mặt
+ * (không còn collide với weapon nữa) nhưng Enemy vẫn ở trong state='attack'.
+ * 
+ * 3. Lỗi sprite attack của enemey.
  */
 
 let canvas;

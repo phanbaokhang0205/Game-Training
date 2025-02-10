@@ -2,6 +2,7 @@ import { AudioManager } from "../helper/AudioManager.js";
 import { CollisionManager } from "../helper/CollisionManager.js";
 import RectCollider from "../helper/RectCollider.js";
 import { Enemy } from "./Enemy.js";
+import { Weapon } from "./Weapon.js";
 
 export class Bullet {
     constructor(x, y, belongTo, damage) {
@@ -65,6 +66,8 @@ export class Bullet {
             this.au_hitEnemy.playSound('pipe_hit')
             this.isHit = true;
             CollisionManager.instance.removeCollider(this.collider);
+        } if (otherCollider.owner instanceof Weapon) {
+            console.log("collide with weapon");
         }
     }
 

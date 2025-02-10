@@ -35,7 +35,7 @@ export class Enemy {
         this.isAlive = true;
         this.level = level;
         this.damage = this.level * 10
-        // this.targetWeapons = null;
+        this.targetWeapons = null;
 
 
         // collider
@@ -114,7 +114,6 @@ export class Enemy {
             this.width, // Chiều rộng trên canvas
             this.height // Chiều cao trên canvas
         );
-
     }
 
     dead() {
@@ -126,12 +125,12 @@ export class Enemy {
     }
 
     update() {
-        // if (!this.isAlive) return;
+        if (!this.isAlive) return;
 
-        if(!this.isAttack){
+        if (!this.isAttack) {
             this.x -= this.speed;
         }
-
+        
         // Kiem tra trang thai alive 
         // **Chưa được**
         // this.dead()
@@ -143,32 +142,33 @@ export class Enemy {
             this.DTPB = this.damage;
             this.HP -= this.DTPB
 
+
             if (this.HP <= 0) {
                 this.isAlive = false
                 CollisionManager.instance.removeCollider(this.collider)
             }
-        } else if (otherCollider.owner instanceof Weapon) {
-            this.isAttack = true
-            // this.state = 'attack'
-            //  if (otherCollider.owner.HP < 0){
-            //     this.isAttack = false;
-            //  }
-            // if (this.state !== 'attack') {
-            // this.speed = 0
-            this.targetWeapons = otherCollider.owner
-            // console.log(this.targetWeapons);
-            // }
 
-            if (this.targetWeapons) {
-                // Nếu Weapon đã chết, trở về trạng thái "walk"
-                if (!this.targetWeapons.isAlive) {
-                    this.targetWeapons = null
-                    this.state = 'Walk'
-                    // this.speed = 0.5
-                }
-                return // Không kiểm tra các Weapon của các Enemy khác chỉ kiểm tra đối với weapon mà Enemy va chạm
+        } else if (otherCollider.owner instanceof Weapon) {
+            this.isAttack = true;
+            this.state = 'attack';
+            this.speed = 0;
+            this.targetWeapons = otherCollider.owner;
+            this.loadImage();
+
+
+            if (this.targetWeapons && !this.targetWeapons.isAlive) {
+                console.log(this.targetWeapons.isAlive);
+
+                // Nếu Weapon bị tiêu diệt, Enemy trở lại trạng thái Walk
+                this.targetWeapons = null;
+                this.isAttack = false;
+                this.state = 'Walk';
+                this.speed = 0.5;
+                this.loadImage();
             }
         }
+
+
     }
 
     draw(context) {
