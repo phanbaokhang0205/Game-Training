@@ -1,20 +1,39 @@
 import { Enemy } from "../model/Enemy.js";
 
 export class EnemyManager {
-    static instance = null
+    static instance = null;
+    
     constructor() {
         this.enemies = [];
-        EnemyManager.instance = this
+        EnemyManager.instance = this;
     }
 
-    draw() {
-        
+    init(data) {
+        this.enemies=[]
+        data.forEach(enemy => {
+            this.addEnemy(
+                enemy.x, enemy.y, 
+                enemy.level, enemy.HP, 
+                enemy.speed, enemy.damage, 
+                enemy.walkSpr, enemy.attackSpr, enemy.atkSpeed
+            )
+        });
     }
 
-    update() { }
+    draw(context) {
+        this.enemies.forEach(enemy => {
+            enemy.draw(context)
+        })
+    }
 
-    addEnemy() {
-        let enemy = new Enemy()
+    update() {
+        this.enemies.forEach(enemy => {
+            enemy.update()
+        })
+    }
+
+    addEnemy(x, y, level, HP, speed, damage, walkSpr, attackSpr, atkSpeed) {
+        let enemy = new Enemy(x, y, level, HP, speed, damage, walkSpr, attackSpr, atkSpeed)
         this.enemies.push(enemy)
     }
 

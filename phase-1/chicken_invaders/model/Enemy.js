@@ -5,9 +5,15 @@ import { Bullet } from "./Bullet.js";
 
 
 export class Enemy {
-    constructor(x, y, level) {
-        this.speed = 0.3;
-        
+    constructor(x, y, level, HP, speed, damage, walkSprite, attackSprite, atkSpeed) {
+        // properties
+        this.isDamaged = false
+        this.HP = HP;
+        this.level = level;
+        this.damage = damage
+        this.speed = speed;
+        this.baseSpeed = speed;
+
         this.image = new Image;
 
         this.bullets = []
@@ -16,21 +22,17 @@ export class Enemy {
         this.isAttack = false;
 
         // number of sprites
-        this.walkSprite = 8
-        this.shootSprite = 8
-        this.attackSprite = 4
+        this.walkSprite = walkSprite
+        this.attackSprite = attackSprite
         this.hurtSprite = 3
         this.deadSprite = 7
 
         this.numberSprites = 8
         this.currentFrame = 8;
 
-        // properties
-        this.isDamaged = false
-        this.HP = 40 * level;
+        
+
         this.isAlive = true;
-        this.level = level;
-        this.damage = this.level * 10
         this.targetWeapons = null;
 
 
@@ -56,8 +58,9 @@ export class Enemy {
             if (this.state === "attack") {
                 this.currentFrame--;
             }
-        }, 250);
+        }, atkSpeed);
 
+        console.log(this.atkSpeed);
 
         this.loadImage();
     }
@@ -83,8 +86,6 @@ export class Enemy {
     loadAnimation(sprite, cols, rows, context) {
         let maxFrame = cols * rows - 1;
 
-        // let maxFrame = cols * rows - 1;
-        // let currentFrame = 0;
         if (this.currentFrame < 0) {
             this.currentFrame = maxFrame;
         }
@@ -126,7 +127,7 @@ export class Enemy {
             this.targetWeapons = null;
             this.isAttack = false;
             this.state = 'Walk';
-            this.speed = 0.3;
+            this.speed = this.baseSpeed;
             this.loadImage();
         }
 
@@ -140,7 +141,7 @@ export class Enemy {
         if (otherCollider.owner instanceof Bullet) {
             this.isDamaged = true;
             this.HP -= otherCollider.owner.damage
-
+            console.log(otherCollider.owner.damage);
 
             if (this.HP <= 0) {
                 this.isAlive = false
@@ -162,11 +163,11 @@ export class Enemy {
         if (!this.isAlive) return;
 
         if (this.state == 'Walk') {
-            this.numberSprites = 8
+            this.numberSprites = this.walkSprite
             this.loadAnimation(this.image, this.walkSprite, 1, context)
         }
         else if (this.state == 'attack') {
-            this.numberSprites = 4
+            this.numberSprites = this.attackSprite
             this.loadAnimation(this.image, this.attackSprite, 1, context)
         }
         else if (this.state == 'hurt') {
@@ -178,7 +179,7 @@ export class Enemy {
 
         // Vẽ thanh máu
         context.fillStyle = "red";
-        const hpBarWidth = ((this.width) * this.HP) / 40; // Giả sử max HP là 1000
+        const hpBarWidth = ((this.width) * this.HP) / this.HP; // Giả sử max HP là 1000
         context.fillRect(this.x, this.y - 10, hpBarWidth, 5);
 
         this.drawHitBox(context);

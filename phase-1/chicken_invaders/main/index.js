@@ -1,9 +1,10 @@
 import { GameManager } from "../helper/GameManager.js";
 import { AudioManager } from "../helper/AudioManager.js";
-import { Enemy } from "../model/Enemy.js";
 import { Grid } from "../model/Grid.js";
 import { WaveManager } from "../model/WaveManager.js";
 import { CollisionManager } from "../helper/CollisionManager.js";
+import { EnemyManager } from "../managers/enemyManager.js";
+import LevelManager from "../level/LevelManager.js";
 
 /**
  * TODO: BUG
@@ -25,21 +26,19 @@ let context;
 let cw;
 let ch;
 let gameManager;
-let waveManager;
 let grid;
 let colliderManager;
-
-// 
-let enemies;
-let weapons;
 
 // audio
 let get_star
 let game_over
 
+let levelMng;
+let enemyMng;
+
 window.onload = init
 
-function init() {
+async function init() {
     canvas = document.getElementById('canvas')
     context = canvas.getContext('2d')
     cw = canvas.width
@@ -50,31 +49,35 @@ function init() {
     colliderManager = new CollisionManager()
 
     // renderEnemies()
-    waveManager = new WaveManager(context, gameManager.score)
-    waveManager.renderEnemy()
-
-    waveManager.renderEnemy()
-    setInterval(() => {
-        waveManager.renderEnemy()
-    }, 5000)
+    // waveManager = new WaveManager(context, gameManager.score)
+    // waveManager.renderEnemy()
+    // waveManager.renderEnemy()
+    // setInterval(() => {
+    //     waveManager.renderEnemy()
+    // }, 5000)
 
     // grid
     grid = new Grid(6, 9, context, cw, ch)
+
+    enemyMng = new EnemyManager()
 
     // Audio
     get_star = new AudioManager();
     game_over = new AudioManager();
 
 
+    levelMng = new LevelManager();
+    await levelMng.startLevel();
+
     requestAnimationFrame(gameLoop)
 }
 
 function update() {
-    enemies = waveManager.enemies.filter(enemy => enemy.isAlive);
+    // enemies = waveManager.enemies.filter(enemy => enemy.isAlive);
     // weapons = grid.weapons.filter(weapon => weapon.isAlive);
 
-    let kills = waveManager.enemies.filter(enemy => !enemy.isAlive)
-    gameManager.score = kills.length;
+    // let kills = waveManager.enemies.filter(enemy => !enemy.isAlive)
+    // gameManager.score = kills.length;
 
     grid.updateWeapon()
     // Cập nhật Weapons và kiểm tra va chạm
@@ -82,7 +85,9 @@ function update() {
     //     weapon.update();
     // });
 
-    waveManager.updateWave()
+    // waveManager.updateWave()
+    levelMng.currentLevel.update();
+
 }
 
 const backgroundImage = new Image();
@@ -94,9 +99,14 @@ function draw() {
     grid.draw()
     grid.drawWeaponIcon()
 
-    enemies.forEach(enemy => {
-        enemy.draw(context)
-    })
+    levelMng.currentLevel.draw(context);
+
+    // levelMng.currentLevel.draw(context)
+
+    // EnemyManager.instance.draw(context)
+    // enemies.forEach(enemy => {
+    //     enemy.draw(context)
+    // })
 
     drawHUD(gameManager.score, 3)
 
@@ -115,7 +125,7 @@ function gameLoop() {
     let now = performance.now()
     window.dt = now - lastTime;
     lastTime = now;
-    
+
 
     window.requestAnimationFrame(gameLoop)
 }

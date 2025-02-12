@@ -1,6 +1,5 @@
 import { Bullet } from "./Bullet.js";
 import { AudioManager } from "../helper/AudioManager.js";
-import { Collider } from "../helper/Collider.js";
 import RectCollider from "../helper/RectCollider.js";
 import { CollisionManager } from "../helper/CollisionManager.js";
 import { Enemy } from "./Enemy.js";
@@ -19,7 +18,8 @@ export class Weapon {
         this.level = level;
         this.isShoot = isShoot;
         this.HP = HP
-        this.DTPE = 0; // damage taken per Enemy
+        console.log(this.HP);
+        this.DTPE = 0;// damage taken per Enemy 
         this.isDamaged = false;
 
         this.image = new Image()
@@ -101,10 +101,10 @@ export class Weapon {
                 this.isAlive = false;
             }
 
-            // Reset trạng thái `isDamaged` sau 2 giây
+            // Reset trạng thái `isDamaged` sau n giây
             setTimeout(() => {
                 this.isDamaged = false;
-            }, 550);
+            }, 250*4);
         }
     }
 
@@ -141,7 +141,6 @@ export class Weapon {
 
     onCollision(otherCollider) {
         if (otherCollider.owner instanceof Enemy) {
-
             this.decreaseHP(otherCollider.owner.damage)
             if (!this.isAlive) {
                 CollisionManager.instance.removeCollider(this.collider);
