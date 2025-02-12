@@ -13,11 +13,11 @@ import { CollisionManager } from "../helper/CollisionManager.js";
  *  - Đã xóa khỏi ô của Grid.
  * trong mảng của weapon thì mất nhưng vẫn nghe tiếng đạn, enemy vẫn bị dính damge.
  * 
- * 
+ * ------fixed-----
  * 2. Enemy khi collide lần đầu tiên với Weapon thì chuyển state = 'attack', dù không còn Weapon nào trước mặt
  * (không còn collide với weapon nữa) nhưng Enemy vẫn ở trong state='attack'.
- * 
  * 3. Lỗi sprite attack của enemey.
+ * ------fixed-----
  */
 
 let canvas;
@@ -56,7 +56,7 @@ function init() {
     waveManager.renderEnemy()
     setInterval(() => {
         waveManager.renderEnemy()
-    }, 100000000)
+    }, 5000)
 
     // grid
     grid = new Grid(6, 9, context, cw, ch)

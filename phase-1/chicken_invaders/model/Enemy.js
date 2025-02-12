@@ -5,12 +5,11 @@ import { Bullet } from "./Bullet.js";
 
 
 export class Enemy {
-    constructor(x, y, HP, level) {
-        this.speed = 0.1;
-        this.color = 'red';
+    constructor(x, y, level) {
+        this.speed = 0.3;
+        
         this.image = new Image;
 
-        this.imageIndex = 1;
         this.bullets = []
 
         this.state = 'Walk'
@@ -28,10 +27,7 @@ export class Enemy {
 
         // properties
         this.isDamaged = false
-
-        // this.HP = HP * level;
-        this.HP = 40;
-        this.DTPB = 0; // damage taken per bullet
+        this.HP = 40 * level;
         this.isAlive = true;
         this.level = level;
         this.damage = this.level * 10
@@ -67,7 +63,7 @@ export class Enemy {
     }
 
     loadImage() {
-        this.image.src = `../img/enemy_1/robot1/Destroyer/${this.state}.png`;
+        this.image.src = `../img/enemy_1/robot${this.level}/${this.state}.png`;
 
         this.image.onload = () => {
             this.width = this.image.width / this.numberSprites; // Đảm bảo width được gán đúng
@@ -85,7 +81,6 @@ export class Enemy {
 
 
     loadAnimation(sprite, cols, rows, context) {
-
         let maxFrame = cols * rows - 1;
 
         // let maxFrame = cols * rows - 1;
@@ -127,20 +122,24 @@ export class Enemy {
     update() {
         if (!this.isAlive) return;
 
+        if (this.isAttack && this.targetWeapons && !this.targetWeapons.isAlive) {
+            this.targetWeapons = null;
+            this.isAttack = false;
+            this.state = 'Walk';
+            this.speed = 0.3;
+            this.loadImage();
+        }
+
         if (!this.isAttack) {
             this.x -= this.speed;
         }
-        
-        // Kiem tra trang thai alive 
-        // **Chưa được**
-        // this.dead()
+
     }
 
     onCollision(otherCollider) {
         if (otherCollider.owner instanceof Bullet) {
             this.isDamaged = true;
-            this.DTPB = this.damage;
-            this.HP -= this.DTPB
+            this.HP -= otherCollider.owner.damage
 
 
             if (this.HP <= 0) {
@@ -154,18 +153,6 @@ export class Enemy {
             this.speed = 0;
             this.targetWeapons = otherCollider.owner;
             this.loadImage();
-
-
-            if (this.targetWeapons && !this.targetWeapons.isAlive) {
-                console.log(this.targetWeapons.isAlive);
-
-                // Nếu Weapon bị tiêu diệt, Enemy trở lại trạng thái Walk
-                this.targetWeapons = null;
-                this.isAttack = false;
-                this.state = 'Walk';
-                this.speed = 0.5;
-                this.loadImage();
-            }
         }
 
 
@@ -194,7 +181,7 @@ export class Enemy {
         const hpBarWidth = ((this.width) * this.HP) / 40; // Giả sử max HP là 1000
         context.fillRect(this.x, this.y - 10, hpBarWidth, 5);
 
-        // this.drawHitBox(context);
+        this.drawHitBox(context);
     }
 
     drawHitBox(context) {

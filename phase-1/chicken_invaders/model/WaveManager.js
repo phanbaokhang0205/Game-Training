@@ -39,7 +39,7 @@ export class WaveManager {
         const centerY = cellY + (this.cellHeight / 2) - (this.enemyHeight / 2) + paddingY;
 
         // Tạo enemy tại vị trí random
-        const enemy = new Enemy(this.cw - 50, centerY, 1000, 1);
+        const enemy = new Enemy(this.cw - 50, centerY, 2);
         this.enemies.push(enemy);
     }
 

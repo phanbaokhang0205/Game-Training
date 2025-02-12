@@ -1,0 +1,187 @@
+{
+    "levelId": 1,
+    "name": "Level 1",
+    "difficulty": "easy",
+    "enemies": [
+        {
+            "id": 1,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 2,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 3,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 4,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 5,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 6,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 7,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 8,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 9,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 10,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 11,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 12,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 13,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 14,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 15,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 16,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 17,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 18,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 19,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        },
+        {
+            "id": 20,
+            "type": 1,
+            "HP": 100,
+            "speed": 0.1,
+            "damage": 10,
+            "walkSprites": 8,
+            "attackSprites": 4
+        }
+    ]
+}

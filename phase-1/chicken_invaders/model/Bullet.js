@@ -57,6 +57,7 @@ export class Bullet {
 
     update() {
         this.x += this.speed * window.dt / 1000;
+        
         // this.y += 0;
         // this.collider.updatePosition(this.x, this.y);
     }
@@ -67,7 +68,7 @@ export class Bullet {
             this.isHit = true;
             CollisionManager.instance.removeCollider(this.collider);
         } if (otherCollider.owner instanceof Weapon) {
-            console.log("collide with weapon");
+            // console.log("collide with weapon");
         }
     }
 

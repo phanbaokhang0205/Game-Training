@@ -55,8 +55,6 @@ export class Weapon {
         CollisionManager.instance.addCollider(this.collider)
 
 
-
-
         setInterval(() => {
             if (this.state === "idle") {
                 this.imageIndex = (this.imageIndex % this.idleSprite) + 1;
@@ -75,7 +73,6 @@ export class Weapon {
 
         // Tốc độ bắn tùy thuộc vào level
         if (this.isShoot) {
-            console.log("Start shooting interval");
             setInterval(() => this.shooting(), 3000 / this.level);
         }
 
@@ -148,7 +145,6 @@ export class Weapon {
             this.decreaseHP(otherCollider.owner.damage)
             if (!this.isAlive) {
                 CollisionManager.instance.removeCollider(this.collider);
-                console.log(this.collider);
             }
         } else if (otherCollider.owner instanceof Weapon) {
             // console.log("a");
@@ -156,8 +152,6 @@ export class Weapon {
     }
 
     shooting() {
-        console.log("shooting function called");
-
         this.state = "shoot"; // Chuyển sang trạng thái bắn
         this.loadImage();
 
