@@ -3,11 +3,10 @@ import { AudioManager } from "../helper/AudioManager.js";
 import RectCollider from "../helper/RectCollider.js";
 import { CollisionManager } from "../helper/CollisionManager.js";
 import { Enemy } from "./Enemy.js";
+import { Grid } from "./Grid.js";
 
 export class Weapon {
-    constructor(x, y, imgSrc, idleSprite, shootSprite, level, isShoot, HP) {
-        // this.x = x
-        // this.y = y
+    constructor(x, y, imgSrc, idleSprite, shootSprite, level, isShoot, HP, range) {
         this.imgSrc = imgSrc;
         this.src = `../img/weapon/${this.imgSrc}/idle_1.png`
         this.idleSprite = idleSprite
@@ -17,10 +16,15 @@ export class Weapon {
         this.isAlive = true;
         this.level = level;
         this.isShoot = isShoot;
+        this.isInstalled = false;
+        this.isColliderAdded = false;
+
+
         this.HP = HP
-        console.log(this.HP);
         this.DTPE = 0;// damage taken per Enemy 
         this.isDamaged = false;
+        this.range = range;
+        this.targetFound = false;
 
         this.image = new Image()
         this.bullets = []
@@ -28,6 +32,7 @@ export class Weapon {
 
         this.shootingInterval = null;
 
+        this.rowWeapon = 0;
 
         // sprite
         this.imageIndex = 1; // Chỉ số ảnh ban đầu
@@ -52,7 +57,7 @@ export class Weapon {
             1, 1,
             this.onCollision.bind(this), this
         )
-        CollisionManager.instance.addCollider(this.collider)
+        // CollisionManager.instance.addCollider(this.collider)
 
 
         setInterval(() => {
@@ -70,12 +75,6 @@ export class Weapon {
             this.loadImage();
 
         }, 100);
-
-        // Tốc độ bắn tùy thuộc vào level
-        if (this.isShoot) {
-            setInterval(() => this.shooting(), 3000 / this.level);
-        }
-
 
         this.loadImage()
     }
@@ -104,7 +103,7 @@ export class Weapon {
             // Reset trạng thái `isDamaged` sau n giây
             setTimeout(() => {
                 this.isDamaged = false;
-            }, 250*4);
+            }, 250 * 4);
         }
     }
 
@@ -205,10 +204,36 @@ export class Weapon {
         context.stroke();
     }
 
-    update() {
-        // Bắn khi được đặt
-        if (this.isShoot && !this.shootingInterval) {
-            this.shootingInterval = setInterval(() => this.shooting(), 3000 / this.level);
+    checkForEnemy(enemies) {
+        for (let enemy of enemies) {
+            if (enemy.rowEnemy === this.rowWeapon && enemy.x > this.x && enemy.x - this.x < this.range) {
+                this.targetFound = true;
+                this.isShoot = true;
+                return;
+            }
+        }
+        this.targetFound = false;
+    }
+
+    update(enemies) {
+        this.rowWeapon = Math.floor(this.y / Grid.instance.cellHeight);
+
+        if (this.isInstalled && !this.isColliderAdded) {
+            CollisionManager.instance.addCollider(this.collider);
+            this.isColliderAdded = true;
+        }
+
+        this.checkForEnemy(enemies);
+
+        if (this.targetFound) {
+            if (this.isShoot && !this.shootingInterval) {
+                this.shootingInterval = setInterval(() => this.shooting(), 3000 / this.level);
+            }
+        } else {
+            if (this.shootingInterval) {
+                clearInterval(this.shootingInterval);
+                this.shootingInterval = null;
+            }
         }
 
         let hitList = []

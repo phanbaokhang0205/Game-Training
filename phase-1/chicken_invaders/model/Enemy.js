@@ -2,6 +2,7 @@ import RectCollider from "../helper/RectCollider.js";
 import { CollisionManager } from "../helper/CollisionManager.js";
 import { Weapon } from "./Weapon.js";
 import { Bullet } from "./Bullet.js";
+import { Grid } from "./Grid.js";
 
 
 export class Enemy {
@@ -29,7 +30,8 @@ export class Enemy {
 
         this.numberSprites = 8
         this.currentFrame = 8;
-
+        
+        this.rowEnemy = 0;
         
 
         this.isAlive = true;
@@ -59,8 +61,6 @@ export class Enemy {
                 this.currentFrame--;
             }
         }, atkSpeed);
-
-        console.log(this.atkSpeed);
 
         this.loadImage();
     }
@@ -121,6 +121,8 @@ export class Enemy {
     }
 
     update() {
+        this.rowEnemy = Math.floor(this.y / Grid.instance.cellHeight);
+
         if (!this.isAlive) return;
 
         if (this.isAttack && this.targetWeapons && !this.targetWeapons.isAlive) {

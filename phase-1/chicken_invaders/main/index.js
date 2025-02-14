@@ -7,18 +7,30 @@ import { EnemyManager } from "../managers/enemyManager.js";
 import LevelManager from "../level/LevelManager.js";
 
 /**
- * TODO: BUG
- * 1. Weapon chết nhưng không bị xóa khỏi game 
- *  - Đã remove ra khỏi objec Collider.
- *  - Đã xóa khỏi mảng weapons trong class Grid.
- *  - Đã xóa khỏi ô của Grid.
- * trong mảng của weapon thì mất nhưng vẫn nghe tiếng đạn, enemy vẫn bị dính damge.
+    * TODO: BUG
+    * 1. Weapon chết nhưng không bị xóa khỏi game 
+    *  - Đã remove ra khỏi objec Collider.
+    *  - Đã xóa khỏi mảng weapons trong class Grid.
+    *  - Đã xóa khỏi ô của Grid.
+    * trong mảng của weapon thì mất nhưng vẫn nghe tiếng đạn, enemy vẫn bị dính damge.
+    *
+    * ------fixed-----
+    * 2. Enemy khi collide lần đầu tiên với Weapon thì chuyển state = 'attack', dù không còn Weapon nào trước mặt
+    * (không còn collide với weapon nữa) nhưng Enemy vẫn ở trong state='attack'.
+    * 3. Lỗi sprite attack của enemey.
+    * 4. Khi kéo để đặt, Weapon vẫn collide được với Enemy.
+    * 
+    * ------fixed-----
+*/
+
+/**
+ * TODO: 
+ * 1. Đặt Weapon vào giữa ô.
+ * 3. 
+ * --------DONE--------
+ * 2. Tạo tầm bắn cho weapon.
+ * --------DONE--------
  * 
- * ------fixed-----
- * 2. Enemy khi collide lần đầu tiên với Weapon thì chuyển state = 'attack', dù không còn Weapon nào trước mặt
- * (không còn collide với weapon nữa) nhưng Enemy vẫn ở trong state='attack'.
- * 3. Lỗi sprite attack của enemey.
- * ------fixed-----
  */
 
 let canvas;
@@ -48,14 +60,6 @@ async function init() {
     gameManager = new GameManager()
     colliderManager = new CollisionManager()
 
-    // renderEnemies()
-    // waveManager = new WaveManager(context, gameManager.score)
-    // waveManager.renderEnemy()
-    // waveManager.renderEnemy()
-    // setInterval(() => {
-    //     waveManager.renderEnemy()
-    // }, 5000)
-
     // grid
     grid = new Grid(6, 9, context, cw, ch)
 
@@ -73,21 +77,13 @@ async function init() {
 }
 
 function update() {
-    // enemies = waveManager.enemies.filter(enemy => enemy.isAlive);
-    // weapons = grid.weapons.filter(weapon => weapon.isAlive);
+    grid.updateWeapon(enemyMng.enemies)
 
-    // let kills = waveManager.enemies.filter(enemy => !enemy.isAlive)
-    // gameManager.score = kills.length;
-
-    grid.updateWeapon()
-    // Cập nhật Weapons và kiểm tra va chạm
-    // weapons.forEach(weapon => {
-    //     weapon.update();
-    // });
-
-    // waveManager.updateWave()
-    levelMng.currentLevel.update();
-
+    if (levelMng && levelMng.currentLevel) {
+        levelMng.currentLevel.update();
+    } else {
+        console.log("Level MNG null");
+    }
 }
 
 const backgroundImage = new Image();
@@ -99,14 +95,11 @@ function draw() {
     grid.draw()
     grid.drawWeaponIcon()
 
-    levelMng.currentLevel.draw(context);
-
-    // levelMng.currentLevel.draw(context)
-
-    // EnemyManager.instance.draw(context)
-    // enemies.forEach(enemy => {
-    //     enemy.draw(context)
-    // })
+    if (levelMng && levelMng.currentLevel) {
+        levelMng.currentLevel.draw(context)
+    } else {
+        console.log("Level MNG null");
+    }
 
     drawHUD(gameManager.score, 3)
 

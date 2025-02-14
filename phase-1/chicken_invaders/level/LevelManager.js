@@ -2,7 +2,9 @@ import LevelLoader from "./LevelLoader.js";
 import Level from "./Level.js";
 
 export default class LevelManager {
+    static instance = null;
     constructor() {
+        LevelManager.instance = this
         this.currentLevel = null;
         this.levelLoader = new LevelLoader();
         this.currentLevelId = 1

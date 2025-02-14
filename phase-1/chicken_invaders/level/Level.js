@@ -1,11 +1,10 @@
 import { EnemyManager } from "../managers/enemyManager.js";
+import LevelManager from "./LevelManager.js";
 
 export default class Level {
     constructor() {
         this.isLoaded = false;
         this.isPaused = false;
-
-        console.log(EnemyManager.instance);
     }
 
     init(data) {
@@ -20,6 +19,9 @@ export default class Level {
     update() {
         // Update game logic
         EnemyManager.instance.update()
+        if (EnemyManager.instance.checkClearEnemies()) {
+            this.onWon()
+        }
     }
 
     pause() {
@@ -36,7 +38,7 @@ export default class Level {
     }
 
     onWon() {
-        // Handle level completion
+        LevelManager.instance.loadNextLevel()
     }
 
     onLose() {

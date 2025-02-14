@@ -4,10 +4,9 @@
     "difficulty": "easy",
     "enemies": [
         {
-            "id": 1,
-            "level": 2,
-            "x": 900,
-            "y": 550,
+            "level": 1,
+            "x": 1776,
+            "y": 256,
             "HP": 30,
             "speed": 0.3,
             "atkSpeed": 150,
@@ -16,28 +15,103 @@
             "attackSpr": 4
         },
         {
-            "id": 2,
             "level": 1,
-            "x": 920,
-            "y": 450,
-            "HP": 20,
-            "speed": 0.1,
-            "atkSpeed": 250,
+            "x": 1581,
+            "y": 256,
+            "HP": 30,
+            "speed": 0.3,
+            "atkSpeed": 150,
             "damage": 10,
             "walkSpr": 8,
             "attackSpr": 4
         },
         {
-            "id": 3,
-            "level": 3,
-            "x": 950,
-            "y": 250,
-            "HP": 50,
-            "speed": 0.15,
+            "level": 1,
+            "x": 1151,
+            "y": 480,
+            "HP": 30,
+            "speed": 0.3,
             "atkSpeed": 150,
-            "damage": 30,
-            "walkSpr": 6,
-            "attackSpr": 17
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 1,
+            "x": 1405,
+            "y": 256,
+            "HP": 30,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 1,
+            "x": 1120,
+            "y": 604,
+            "HP": 30,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 1,
+            "x": 1525,
+            "y": 140,
+            "HP": 30,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 1,
+            "x": 1243,
+            "y": 372,
+            "HP": 30,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 1,
+            "x": 1068,
+            "y": 140,
+            "HP": 30,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 1,
+            "x": 1689,
+            "y": 372,
+            "HP": 30,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 1,
+            "x": 1523,
+            "y": 480,
+            "HP": 30,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
         }
     ]
 }

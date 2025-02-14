@@ -30,6 +30,7 @@ export class EnemyManager {
         this.enemies.forEach(enemy => {
             enemy.update()
         })
+        this.enemies = this.enemies.filter((enemy) => enemy.isAlive);
     }
 
     addEnemy(x, y, level, HP, speed, damage, walkSpr, attackSpr, atkSpeed) {
@@ -37,4 +38,7 @@ export class EnemyManager {
         this.enemies.push(enemy)
     }
 
+    checkClearEnemies() {
+        return this.enemies.length === 0;
+    }
 }

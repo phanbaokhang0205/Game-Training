@@ -2,13 +2,18 @@ import { Weapon } from "./Weapon.js";
 import { Lobby } from "./Lobby.js";
 
 export class Grid {
+    static instance = null
     constructor(rows, cols, context, cw, ch) {
+        Grid.instance = this;
+
         this.rows = rows;
         this.cols = cols;
         this.context = context;
         this.canvas = context.canvas;
         this.cellWidth = cw / cols;
-        this.cellHeight = ch / rows;
+        this.cellHeight = ch / rows - 2;
+        this.centerX = 0;
+        this.centerY = 0;
 
         this.weaponItems = []
         this.draggingWeapon = null;
@@ -62,7 +67,7 @@ export class Grid {
         this.lobby.drawWeaponItem()
     }
 
-    
+
     installWeapon() {
         // su kien chon 1 weapon de install len canvas
         this.canvas.addEventListener("mousedown", (e) => {
@@ -86,9 +91,8 @@ export class Grid {
                     mouseX, mouseY,
                     selectedWeapon.imgSrc,
                     selectedWeapon.idleSprite, selectedWeapon.shootSprite,
-                    selectedWeapon.level, false, 100
+                    selectedWeapon.level, false, 100, 500
                 )
-                console.log(selectedWeapon.shootSprite);
             }
         });
 
@@ -101,7 +105,7 @@ export class Grid {
         });
 
         this.canvas.addEventListener("mouseup", (e) => {
-            
+
             if (this.draggingWeapon) {
                 const mouseX = e.offsetX;
                 const mouseY = e.offsetY;
@@ -113,7 +117,6 @@ export class Grid {
 
                 // Kiểm tra hợp lệ trước khi thả weapon
                 // Nếu ô trống thì mới cho thả weapon
-                /**Ban đầu */
                 if (
                     row >= 0 && row < this.rows
                     && col >= 0 && col < this.cols
@@ -121,11 +124,12 @@ export class Grid {
                 ) {
                     this.grid[row][col] = this.draggingWeapon; // Đặt weapon vào lưới
                     this.weapons.push(this.draggingWeapon)
-                    this.draggingWeapon.isShoot = true
+                    this.draggingWeapon.isInstalled = true
 
-
+                    console.log(this.draggingWeapon.x);
+                    console.log(this.draggingWeapon.y);
                 }
-                
+
 
                 this.draggingWeapon = null; // Ngừng kéo
 
@@ -133,10 +137,13 @@ export class Grid {
         })
     }
 
-    updateWeapon() {
+    updateWeapon(enemies) {
+        this.centerX = 1 * this.cellWidth + this.cellWidth / 2;
+        this.centerY = 1 * this.cellHeight + this.cellHeight / 2;
+
         let weaponList = []
         this.weapons.forEach(weapon => {
-            weapon.update()
+            weapon.update(enemies)
             if (!weapon.isAlive) {
                 weaponList.push(weapon)
             }

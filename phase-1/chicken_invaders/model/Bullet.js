@@ -6,8 +6,6 @@ import { Weapon } from "./Weapon.js";
 
 export class Bullet {
     constructor(x, y, belongTo, damage) {
-        // this.x = x;
-        // this.y = y;
         this.speed = 200;
         this.image = new Image;
         this.collider = new RectCollider(
@@ -58,8 +56,6 @@ export class Bullet {
     update() {
         this.x += this.speed * window.dt / 1000;
         
-        // this.y += 0;
-        // this.collider.updatePosition(this.x, this.y);
     }
 
     onCollision(otherCollider) {
@@ -83,7 +79,6 @@ export class Bullet {
                 this.height              // Chiều cao vẽ
             );
 
-            this.drawHitBox(context);
         }
     }
 
