@@ -6,50 +6,47 @@ import { Enemy } from "./Enemy.js";
 import { Grid } from "./Grid.js";
 
 export class Weapon {
-    constructor(x, y, imgSrc, idleSprite, shootSprite, level, isShoot, HP, range) {
+    constructor(x, y, imgSrc, idleSprite, shootSprite, level, isShoot, HP, sun) {
+        this.image = new Image()
         this.imgSrc = imgSrc;
         this.src = `../img/weapon/${this.imgSrc}/idle_1.png`
         this.idleSprite = idleSprite
         this.shootSprite = shootSprite;
+        this.state = 'idle'
+        this.imageIndex = 1;
 
 
         this.isAlive = true;
-        this.level = level;
         this.isShoot = isShoot;
+        this.isDamaged = false;
         this.isInstalled = false;
         this.isColliderAdded = false;
 
+        this.sun = sun;
 
-        this.HP = HP
-        this.DTPE = 0;// damage taken per Enemy 
-        this.isDamaged = false;
-        this.range = range;
+        this.HP = HP;
+        this.DTPE = 0; // damage taken per Enemy 
+        this.range = 0;
+        this.baseHP = HP;
+        this.level = level;
         this.targetFound = false;
-
-        this.image = new Image()
-        this.bullets = []
-        this.state = 'idle'
 
         this.shootingInterval = null;
 
         this.rowWeapon = 0;
 
-        // sprite
-        this.imageIndex = 1; // Chỉ số ảnh ban đầu
-
-
         // audio
         this.au_shooting = new AudioManager()
 
-
         // sprite bullet
-        let bulletSprite = 1;
-        setInterval(() => {
-            bulletSprite = (bulletSprite % 4) + 1; // Lặp từ 1 đến 5
-            this.bullets.forEach(b => {
-                b.changeImage(bulletSprite);
-            })
-        }, 50);
+        this.bullets = []
+        // let bulletSprite = 1;
+        // this.bulletAnimation = setInterval(() => {
+        //     bulletSprite = (bulletSprite % 4) + 1;
+        //     this.bullets.forEach(b => {
+        //         b.changeImage(bulletSprite);
+        //     })
+        // }, 50);
 
         // collider
         this.collider = new RectCollider(
@@ -57,34 +54,29 @@ export class Weapon {
             1, 1,
             this.onCollision.bind(this), this
         )
-        // CollisionManager.instance.addCollider(this.collider)
-
 
         setInterval(() => {
             if (this.state === "idle") {
                 this.imageIndex = (this.imageIndex % this.idleSprite) + 1;
+                this.loadImage();
             }
-            this.loadImage();
-
         }, 150);
 
         setInterval(() => {
             if (this.state === "shoot") {
                 this.imageIndex = (this.imageIndex % this.shootSprite) + 1;
+                this.loadImage();
             }
-            this.loadImage();
-
         }, 100);
 
         this.loadImage()
     }
 
 
-    changeImage(index) {
-        // Cập nhật chỉ số ảnh và load ảnh mới
-        this.imageIndex = index;
-        this.loadImage();
-    }
+    // changeImage(index) {
+    //     this.imageIndex = index;
+    //     this.loadImage();
+    // }
 
 
     decreaseHP(DTPE) {
@@ -93,20 +85,16 @@ export class Weapon {
             this.isDamaged = true;
             this.DTPE = DTPE;
 
-
             this.HP -= this.DTPE;
-            // Kiểm tra nếu HP <= 0 thì dừng giảm máu
             if (this.HP <= 0) {
                 this.isAlive = false;
             }
 
-            // Reset trạng thái `isDamaged` sau n giây
             setTimeout(() => {
                 this.isDamaged = false;
             }, 250 * 4);
         }
     }
-
 
     loadImage() {
         if (this.state == 'idle') {
@@ -145,12 +133,12 @@ export class Weapon {
                 CollisionManager.instance.removeCollider(this.collider);
             }
         } else if (otherCollider.owner instanceof Weapon) {
-            // console.log("a");
+            return
         }
     }
 
     shooting() {
-        this.state = "shoot"; // Chuyển sang trạng thái bắn
+        this.state = "shoot";
         this.loadImage();
 
         const bullet = new Bullet(this.x, this.y + (this.height / 2), this.imgSrc, this.level * 1);
@@ -161,26 +149,20 @@ export class Weapon {
         this.au_shooting.playSound('shooting_4')
 
         setTimeout(() => {
-            this.state = "idle"; // Trả về trạng thái idle
+            this.state = "idle";
             this.loadImage();
-        }, 400);
+        }, 600);
     }
 
     draw(x = this.x, y = this.y, context) {
         if (!this.isAlive) return;
 
         if (this.image.complete) {
-            context.drawImage(
-                this.image,              // Ảnh nguồn
-                x, // Tọa độ x để vẽ (canh giữa)
-                y,// Tọa độ y để vẽ (canh giữa)
-                this.width,              // Chiều rộng vẽ
-                this.height              // Chiều cao vẽ
-            );
+            context.drawImage(this.image, x, y, this.width, this.height);
 
             // Vẽ thanh máu
             context.fillStyle = "green";
-            const hpBarWidth = (this.width * this.HP) / 100; // Giả sử max HP là 100
+            const hpBarWidth = (this.width * this.HP) / 100;
             context.fillRect(this.x, this.y - 10, hpBarWidth, 5);
 
         }
@@ -195,15 +177,11 @@ export class Weapon {
     drawHitBox(context) {
         context.beginPath();
         context.strokeStyle = 'blue';
-        context.strokeRect(
-            this.x,
-            this.y,
-            this.width,
-            this.height
-        );
+        context.strokeRect(this.x, this.y, this.width, this.height);
         context.stroke();
     }
 
+    // 
     checkForEnemy(enemies) {
         for (let enemy of enemies) {
             if (enemy.rowEnemy === this.rowWeapon && enemy.x > this.x && enemy.x - this.x < this.range) {
@@ -221,21 +199,27 @@ export class Weapon {
         if (this.isInstalled && !this.isColliderAdded) {
             CollisionManager.instance.addCollider(this.collider);
             this.isColliderAdded = true;
+            this.range = 1000 - this.x
         }
 
         this.checkForEnemy(enemies);
 
-        if (this.targetFound) {
+
+        // speed attack
+        if (this.isAlive && this.targetFound) {
             if (this.isShoot && !this.shootingInterval) {
-                this.shootingInterval = setInterval(() => this.shooting(), 3000 / this.level);
+                this.shootingInterval = setInterval(() => {
+                    this.shooting()
+                }, 3000 / this.level);
             }
         } else {
             if (this.shootingInterval) {
                 clearInterval(this.shootingInterval);
-                this.shootingInterval = null;
+                this.shootingInterval = null
             }
         }
 
+        // update bullets
         let hitList = []
         this.bullets.forEach((bullet) => {
             bullet.update()

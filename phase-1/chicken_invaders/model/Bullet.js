@@ -23,17 +23,21 @@ export class Bullet {
         this.damage = damage;
 
         // sprite
-        this.imageIndex = 1; // Chỉ số ảnh ban đầu
-        this.loadImage();
+        this.imageIndex = 1;
+        this.bulletAnimation = setInterval(() => {
+            this.imageIndex = (this.imageIndex % 4) + 1;
+            this.loadImage();
+        }, 50);
 
         this.isHit = false;
+        this.loadImage();
 
     }
 
     loadImage() {
         this.image.src = `../img/bullet/bullet1/bullet1_${this.imageIndex}.png`;
         this.image.onload = () => {
-            this.width = this.image.width / 4;     // Chiều rộng cố định của ảnh bullet
+            this.width = this.image.width / 4;
             this.height = this.image.height / 4;
 
             this.collider.width = this.width;
@@ -47,15 +51,18 @@ export class Bullet {
 
     }
 
-    changeImage(index) {
-        // Cập nhật chỉ số ảnh và load ảnh mới
-        this.imageIndex = index;
-        this.loadImage();
-    }
+    // changeImage(index) {
+    //     // Cập nhật chỉ số ảnh và load ảnh mới
+    //     this.imageIndex = index;
+    //     this.loadImage();
+    // }
 
     update() {
+        if (this.x >= 1000) {
+            this.isHit = true
+            CollisionManager.instance.removeCollider(this.collider);
+        }
         this.x += this.speed * window.dt / 1000;
-        
     }
 
     onCollision(otherCollider) {
@@ -71,14 +78,7 @@ export class Bullet {
 
     draw(context) {
         if (this.image.complete) {
-            context.drawImage(
-                this.image,              // Ảnh nguồn
-                this.x, // Tọa độ x để vẽ (canh giữa)
-                this.y,// Tọa độ y để vẽ (canh giữa)
-                this.width,              // Chiều rộng vẽ
-                this.height              // Chiều cao vẽ
-            );
-
+            context.drawImage(this.image, this.x, this.y, this.width, this.height);
         }
     }
 

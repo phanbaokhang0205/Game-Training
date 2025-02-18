@@ -7,9 +7,11 @@ import { Grid } from "./Grid.js";
 
 export class Enemy {
     constructor(x, y, level, HP, speed, damage, walkSprite, attackSprite, atkSpeed) {
+        
         // properties
         this.isDamaged = false
         this.HP = HP;
+        this.baseHP = HP;
         this.level = level;
         this.damage = damage
         this.speed = speed;
@@ -25,14 +27,12 @@ export class Enemy {
         // number of sprites
         this.walkSprite = walkSprite
         this.attackSprite = attackSprite
-        this.hurtSprite = 3
-        this.deadSprite = 7
 
-        this.numberSprites = 8
+        this.numberSprites = (this.state === 'Walk') ? walkSprite : attackSprite
         this.currentFrame = 8;
-        
+
         this.rowEnemy = 0;
-        
+
 
         this.isAlive = true;
         this.targetWeapons = null;
@@ -101,29 +101,26 @@ export class Enemy {
         // Clear and draw
         context.drawImage(
             sprite,
-            column * frameWidth, // Tọa độ x của khung hình
-            row * frameHeight, // Tọa độ y của khung hình
-            frameWidth, // Chiều rộng khung hình
-            frameHeight, // Chiều cao khung hình
-            this.x, // Tọa độ x vẽ trên canvas
-            this.y, // Tọa độ y vẽ trên canvas
-            this.width, // Chiều rộng trên canvas
-            this.height // Chiều cao trên canvas
+            column * frameWidth,
+            row * frameHeight,
+            frameWidth,
+            frameHeight,
+            this.x,
+            this.y,
+            this.width,
+            this.height
         );
-    }
-
-    dead() {
-        if (this.HP <= 0) {
-            this.state = 'dead';
-            this.isAlive = false;
-            this.loadImage()
-        }
     }
 
     update() {
         this.rowEnemy = Math.floor(this.y / Grid.instance.cellHeight);
 
         if (!this.isAlive) return;
+
+        if (this.x < - this.width) {
+            this.isAlive = false
+            CollisionManager.instance.removeCollider(this.collider)
+        }
 
         if (this.isAttack && this.targetWeapons && !this.targetWeapons.isAlive) {
             this.targetWeapons = null;
@@ -133,17 +130,16 @@ export class Enemy {
             this.loadImage();
         }
 
-        if (!this.isAttack) {
-            this.x -= this.speed;
-        }
-
+        // if (!this.isAttack) {
+        this.x -= this.speed;
+        // }
     }
 
     onCollision(otherCollider) {
         if (otherCollider.owner instanceof Bullet) {
+
             this.isDamaged = true;
             this.HP -= otherCollider.owner.damage
-            console.log(otherCollider.owner.damage);
 
             if (this.HP <= 0) {
                 this.isAlive = false
@@ -157,9 +153,8 @@ export class Enemy {
             this.targetWeapons = otherCollider.owner;
             this.loadImage();
         }
-
-
     }
+
 
     draw(context) {
         if (!this.isAlive) return;
@@ -172,19 +167,15 @@ export class Enemy {
             this.numberSprites = this.attackSprite
             this.loadAnimation(this.image, this.attackSprite, 1, context)
         }
-        else if (this.state == 'hurt') {
 
-        }
-        else if (this.state == 'dead') {
-
-        }
-
-        // Vẽ thanh máu
-        context.fillStyle = "red";
-        const hpBarWidth = ((this.width) * this.HP) / this.HP; // Giả sử max HP là 1000
-        context.fillRect(this.x, this.y - 10, hpBarWidth, 5);
-
+        this.drawHUD(context)
         this.drawHitBox(context);
+    }
+
+    drawHUD(context) {
+        context.fillStyle = "red";
+        const hpBarWidth = (this.width * this.HP) / this.baseHP;
+        context.fillRect(this.x, this.y - 10, hpBarWidth, 5);
     }
 
     drawHitBox(context) {

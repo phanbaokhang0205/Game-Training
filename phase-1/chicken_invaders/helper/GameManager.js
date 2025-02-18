@@ -1,7 +1,9 @@
 export class GameManager {
     constructor() {
         this.score = 0;
+        this.suns = 200;
         this.state = 'playing'; // Possible states: 'playing', 'paused', 'gameOver'
+        this.lives = 5;
     }
 
     setState(newState) {
@@ -10,6 +12,10 @@ export class GameManager {
 
     updateScore(points) {
         this.score += points;
+    }
+
+    updateSun(sun) {
+        this.suns += sun
     }
 
     resetGame() {

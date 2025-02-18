@@ -22,6 +22,9 @@ export default class Level {
         if (EnemyManager.instance.checkClearEnemies()) {
             this.onWon()
         }
+        if (EnemyManager.instance.checkEnemyReachEnd()) {
+            this.onLose()
+        }
     }
 
     pause() {
@@ -43,5 +46,6 @@ export default class Level {
 
     onLose() {
         // Handle level failure
+        console.log("THUA");
     }
 }

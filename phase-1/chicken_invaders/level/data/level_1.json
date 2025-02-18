@@ -5,36 +5,36 @@
     "enemies": [
         {
             "level": 1,
-            "x": 1776,
-            "y": 256,
-            "HP": 30,
-            "speed": 0.3,
-            "atkSpeed": 150,
-            "damage": 10,
-            "walkSpr": 8,
-            "attackSpr": 4
-        },
-        {
-            "level": 1,
-            "x": 1581,
-            "y": 256,
-            "HP": 30,
-            "speed": 0.3,
-            "atkSpeed": 150,
-            "damage": 10,
-            "walkSpr": 8,
-            "attackSpr": 4
-        },
-        {
-            "level": 1,
-            "x": 1151,
+            "x": 1990,
             "y": 480,
             "HP": 30,
             "speed": 0.3,
+            "atkSpeed": 250,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 2,
+            "x": 1430,
+            "y": 372,
+            "HP": 30,
+            "speed": 0.45,
             "atkSpeed": 150,
             "damage": 10,
             "walkSpr": 8,
             "attackSpr": 4
+        },
+        {
+            "level": 3,
+            "x": 1151,
+            "y": 480,
+            "HP": 50,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 25,
+            "walkSpr": 6,
+            "attackSpr": 17
         },
         {
             "level": 1,
