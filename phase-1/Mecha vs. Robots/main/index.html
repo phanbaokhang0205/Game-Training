@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chicken Invaders</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="canvasBox">
+        <canvas id="canvas" width="1000" height="700"></canvas>
+        <audio id="bg_music" src="../audio/background_music3.mp3" loop></audio>
+        <!-- Menu game start -->
+        <div class="start-menu" id="startMenu">
+            <h1>Mecha vs. Monsters</h1>
+            <img src="../img/weapon/weapon1/idle.png" alt="Game Image">
+            <div class="buttons">
+                <button id="start_game">Start</button>
+                <button>Options</button>
+                <button>Exit</button>
+            </div>
+        </div>
+        <!-- Menu Pause -->
+        <div class="pause-menu" id="pauseMenu">
+            <h2>Game Paused</h2>
+            <b>Points: <span id="pointsResume">0</span></b><br>
+            <button id="resumeButton">Resume</button>
+            <button id="restartButton">Restart</button>
+            <b>🔊 </b><input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1"><br>
+        </div>
+        <!-- Menu Gameover-->
+        <div class="game-over-menu" id="gameOverMenu">
+            <h2>Game Over</h2>
+            <b>Kills: <span id="points">0</span></b><br>
+            <b>Suns: <span id="suns"></span></b>
+            <button id="retryButton">Retry</button>
+        </div>
+
+        <!-- Icon Menu -->
+        <div id="menuIcon">☰</div>
+
+    </div>
+    <script type="module" src="index.js"></script>
+</body>
+
+</html>

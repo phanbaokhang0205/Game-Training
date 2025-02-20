@@ -1,0 +1,85 @@
+{
+    "levelId": 2,
+    "name": "Level 2",
+    "difficulty": "easy",
+    "enemies": [
+        {
+            "level": 2,
+            "x": 1230,
+            "y": 140,
+            "HP": 160,
+            "speed": 0.6,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 2,
+            "x": 1130,
+            "y": 256,
+            "HP": 160,
+            "speed": 0.6,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 2,
+            "x": 1930,
+            "y": 372,
+            "HP": 160,
+            "speed": 0.6,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 2,
+            "x": 1830,
+            "y": 480,
+            "HP": 160,
+            "speed": 0.6,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 2,
+            "x": 1730,
+            "y": 604,
+            "HP": 160,
+            "speed": 0.6,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 3,
+            "x": 1500,
+            "y": 480,
+            "HP": 200,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 25,
+            "walkSpr": 6,
+            "attackSpr": 17
+        },
+        {
+            "level": 3,
+            "x": 1400,
+            "y": 256,
+            "HP": 200,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 25,
+            "walkSpr": 6,
+            "attackSpr": 17
+        }
+        
+    ]
+}

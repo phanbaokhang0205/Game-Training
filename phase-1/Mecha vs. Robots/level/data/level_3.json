@@ -1,0 +1,95 @@
+{
+    "levelId": 3,
+    "name": "Level 3",
+    "difficulty": "easy",
+    "enemies": [
+        {
+            "level": 3,
+            "x": 1100,
+            "y": 480,
+            "HP": 350,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 25,
+            "walkSpr": 6,
+            "attackSpr": 17
+        },
+        {
+            "level": 3,
+            "x": 1500,
+            "y": 480,
+            "HP": 350,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 25,
+            "walkSpr": 6,
+            "attackSpr": 17
+        },
+        {
+            "level": 3,
+            "x": 1500,
+            "y": 256,
+            "HP": 350,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 25,
+            "walkSpr": 6,
+            "attackSpr": 17
+        },
+        {
+            "level": 3,
+            "x": 1200,
+            "y": 256,
+            "HP": 350,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 25,
+            "walkSpr": 6,
+            "attackSpr": 17
+        },
+        {
+            "level": 3,
+            "x": 1250,
+            "y": 604,
+            "HP": 350,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 25,
+            "walkSpr": 6,
+            "attackSpr": 17
+        },
+        {
+            "level": 3,
+            "x": 1550,
+            "y": 604,
+            "HP": 350,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 25,
+            "walkSpr": 6,
+            "attackSpr": 17
+        },
+        {
+            "level": 3,
+            "x": 1860,
+            "y": 372,
+            "HP": 350,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 25,
+            "walkSpr": 6,
+            "attackSpr": 17
+        },
+        {
+            "level": 3,
+            "x": 1450,
+            "y": 140,
+            "HP": 350,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 25,
+            "walkSpr": 6,
+            "attackSpr": 17
+        }
+    ]
+}

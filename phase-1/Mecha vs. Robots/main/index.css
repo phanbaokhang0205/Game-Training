@@ -1,0 +1,183 @@
+/* Đặt body và html chiếm toàn bộ chiều cao */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.canvasBox {
+    position: relative;
+}
+
+/* Canvas */
+canvas {
+    border: 2px solid blue;
+    display: block;
+}
+
+/* Menu tạm dừng */
+.pause-menu {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    display: none;
+    width: 300px;
+    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+}
+
+.pause-menu h2 {
+    color: white;
+    margin-bottom: 20px;
+}
+
+.pause-menu button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#resumeButton {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#restartButton {
+    background-color: #f44336;
+    color: white;
+}
+
+/* Icon Menu */
+#menuIcon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+#menuIcon:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.pause-menu button:hover {
+    opacity: 0.8;
+}
+
+.game-over-menu {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 0, 0, 0.8);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    display: none;
+    width: 300px;
+    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+}
+
+.game-over-menu h2 {
+    color: white;
+    margin-bottom: 20px;
+}
+
+.game-over-menu button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#retryButton {
+    background-color: #ffcc00;
+    color: black;
+}
+
+b {
+    color: aliceblue;
+}
+
+
+/* Khi menu hiển thị */
+.show {
+    display: block;
+}
+
+.start-menu {
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    color: white;
+    display: block;
+}
+
+.start-menu h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.start-menu img {
+    width: 100%;
+    max-width: 300px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.buttons button {
+    padding: 12px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    background: #ff9800;
+    color: white;
+    font-weight: bold;
+}
+
+.buttons button:hover {
+    background: #ff5722;
+    transform: scale(1.1);
+}

@@ -1,0 +1,117 @@
+{
+    "levelId": 1,
+    "name": "Level 1",
+    "difficulty": "easy",
+    "enemies": [
+        {
+            "level": 1,
+            "x": 1490,
+            "y": 480,
+            "HP": 150,
+            "speed": 0.3,
+            "atkSpeed": 250,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 2,
+            "x": 1930,
+            "y": 372,
+            "HP": 160,
+            "speed": 0.6,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 2,
+            "x": 2000,
+            "y": 604,
+            "HP": 160,
+            "speed": 0.6,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 1,
+            "x": 1405,
+            "y": 256,
+            "HP": 150,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 1,
+            "x": 1120,
+            "y": 604,
+            "HP": 150,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 1,
+            "x": 1525,
+            "y": 140,
+            "HP": 150,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 1,
+            "x": 1151,
+            "y": 480,
+            "HP": 150,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 25,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 1,
+            "x": 1243,
+            "y": 372,
+            "HP": 150,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 1,
+            "x": 1068,
+            "y": 140,
+            "HP": 150,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        },
+        {
+            "level": 1,
+            "x": 1689,
+            "y": 372,
+            "HP": 150,
+            "speed": 0.3,
+            "atkSpeed": 150,
+            "damage": 10,
+            "walkSpr": 8,
+            "attackSpr": 4
+        }
+    ]
+}

@@ -36,7 +36,7 @@ function init() {
             obj.handleCollision(); // Cập nhật frame
             obj.draw(); // Vẽ vòng tròn và sprite
         })
-    }, 1);
+    }, 100);
 }
 class GameObject {
     constructor(x, y, vx, vy, mass) {
@@ -108,6 +108,7 @@ class Circle extends GameObject {
         this.context.translate(this.x, this.y);
         this.context.rotate(Math.PI / 180 * (this.angle + 90));
         this.context.translate(-this.x, -this.y);
+
         // Draw the image
         this.context.drawImage(
             Circle.sprite,
