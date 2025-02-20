@@ -1,1 +1,0 @@
-[run](https://phanbaokhang0205.github.io/Game-Training/phase-1/Mecha vs. Robots/main/index.html)
