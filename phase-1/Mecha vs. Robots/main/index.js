@@ -173,8 +173,8 @@ async function init() {
     pointsResume = document.getElementById("pointsResume");
     suns = document.getElementById("suns");
 
-    volumeSlider.addEventListener("input", () => {
-        let volume = parseFloat(event.target.value);
+    volumeSlider.addEventListener("input", (e) => {
+        let volume = parseFloat(e.target.value);
 
         // Đảm bảo giá trị nằm trong khoảng [0, 1]
         if (!isNaN(volume) && volume >= 0 && volume <= 1) {
