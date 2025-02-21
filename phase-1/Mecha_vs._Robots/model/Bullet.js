@@ -19,7 +19,6 @@ export class Bullet {
 
         this.au_hitEnemy = new AudioManager()
         this.au_hitEnemy.loadSound('pipe_hit', '../audio/pipe_hit.mp3')
-        console.log(this.au_hitEnemy);
 
         this.belongTo = belongTo;
         this.damage = damage;

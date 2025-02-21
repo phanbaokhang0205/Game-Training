@@ -181,3 +181,104 @@ b {
     background: #ff5722;
     transform: scale(1.1);
 }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .canvasBox {
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    canvas {
+        width: 95%;
+        height: auto;
+        border: 2px solid blue;
+    }
+
+    /* Start Menu */
+    .start-menu {
+        width: 90%;
+        top: 20%;
+        left: 5%;
+        padding: 20px;
+    }
+
+    .start-menu h1 {
+        font-size: 2em;
+    }
+
+    .start-menu img {
+        max-width: 250px;
+    }
+
+    .buttons button {
+        font-size: 1em;
+        padding: 10px;
+    }
+
+    /* Pause Menu */
+    .pause-menu,
+    .game-over-menu {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .pause-menu h2,
+    .game-over-menu h2 {
+        font-size: 1.5em;
+    }
+
+    .pause-menu button,
+    .game-over-menu button {
+        font-size: 1em;
+        padding: 10px;
+    }
+
+    /* Menu Icon */
+    #menuIcon {
+        font-size: 25px;
+        padding: 8px 12px;
+    }
+}
+
+/* Responsive cho điện thoại nhỏ hơn (max-width: 480px) */
+@media (max-width: 480px) {
+    .start-menu h1 {
+        font-size: 1.8em;
+    }
+
+    .start-menu img {
+        max-width: 200px;
+    }
+
+    .buttons button {
+        font-size: 0.9em;
+        padding: 8px;
+    }
+
+    .pause-menu,
+    .game-over-menu {
+        width: 85%;
+        padding: 15px;
+    }
+
+    .pause-menu h2,
+    .game-over-menu h2 {
+        font-size: 1.2em;
+    }
+
+    .pause-menu button,
+    .game-over-menu button {
+        font-size: 0.9em;
+        padding: 8px;
+    }
+}

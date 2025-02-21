@@ -13,6 +13,9 @@ export class Hammer {
         this.height = 1;
         this.gameMng = GameManager.instance;
 
+        this.positionX = 0;
+        this.positionY = 0;
+
         this.draggingHammer = null;
         this.au_remove = new AudioManager()
         this.au_remove.loadSound('remove', '../audio/remove_weapon.mp3')
@@ -42,48 +45,83 @@ export class Hammer {
         }
     }
 
+    getTouchPosition(e) {
+        const touch = e.touches[0] || e.changedTouches[0];
+        const rect = e.target.getBoundingClientRect();
+
+        this.positionX = (touch.clientX - rect.left) * (this.canvas.width / rect.width);
+        this.positionY = (touch.clientY - rect.top) * (this.canvas.height / rect.height);
+    }
 
     handle() {
-        this.canvas.addEventListener("mousedown", (e) => {
-            const mouseX = e.offsetX;
-            const mouseY = e.offsetY;
+        // destop
+        this.canvas.addEventListener("mousedown", (e) => { this.pickHammer(e, false) });
+        this.canvas.addEventListener("mousemove", (e) => { this.dragHammer(e, false) });
+        this.canvas.addEventListener("mouseup", (e) => { this.uncrewWeapon(e, false) })
+
+        // mobile
+        this.canvas.addEventListener("touchstart", (e) => { this.pickHammer(e, true) });
+        this.canvas.addEventListener("touchmove", (e) => { this.dragHammer(e, true) });
+        this.canvas.addEventListener("touchend", (e) => { this.uncrewWeapon(e, true) });
+    }
+
+    pickHammer(e, touchable) {
+        if (touchable) {
+            this.getTouchPosition(e)
+        } else {
+            this.positionX = e.offsetX;
+            this.positionY = e.offsetY;
+        }
 
 
-            if (mouseX >= this.x &&
-                mouseX <= this.x + this.width &&
-                mouseY >= this.y &&
-                mouseY <= this.y + this.height
-            ) {
-                this.draggingHammer = new Hammer(mouseX, mouseY, this.context)
-            }
-        });
+        if (this.positionX >= this.x &&
+            this.positionX <= this.x + this.width &&
+            this.positionY >= this.y &&
+            this.positionY <= this.y + this.height
+        ) {
+            this.draggingHammer = new Hammer(this.positionX, this.positionY, this.context)
+        }
+    }
 
-        this.canvas.addEventListener("mousemove", (e) => {
-            if (this.draggingHammer) {
+    dragHammer(e, touchable) {
+        if (this.draggingHammer) {
+            if (touchable) {
+                e.preventDefault()
+                this.getTouchPosition(e)
+                this.draggingHammer.x = this.positionX - 40;
+                this.draggingHammer.y = this.positionY - 30;
+            } else {
+
                 this.draggingHammer.x = e.offsetX - 40;
                 this.draggingHammer.y = e.offsetY - 30;
             }
-        });
+        }
+    }
 
-        this.canvas.addEventListener("mouseup", (e) => {
-            if (this.draggingHammer) {
-                const mouseX = e.offsetX;
-                const mouseY = e.offsetY;
+    uncrewWeapon(e, touchable) {
 
-                const col = Math.floor(mouseX / Grid.instance.cellWidth);
-                const row = Math.floor(mouseY / Grid.instance.cellHeight);
+        if (this.draggingHammer) {
+            if (touchable) {
+                e.preventDefault()
+                this.getTouchPosition(e)
+            } else {
+                this.positionX = e.offsetX;
+                this.positionY = e.offsetY;
+            }
+
+            const col = Math.floor(this.positionX / Grid.instance.cellWidth);
+            const row = Math.floor(this.positionY / Grid.instance.cellHeight);
 
 
-                if (Grid.instance.grid[row][col]) {
-                    const selectedWeapon = Grid.instance.grid[row][col];
-                    const refundSun = Math.round(selectedWeapon.sun * 0.75);
-                    this.gameMng.suns += refundSun;
-                    selectedWeapon.isAlive = false
-                    this.au_remove.playSound('remove')
-                }
-                this.draggingHammer = null;
+            if (Grid.instance.grid[row][col]) {
+                const selectedWeapon = Grid.instance.grid[row][col];
+                const refundSun = Math.round(selectedWeapon.sun * 0.75);
+                this.gameMng.suns += refundSun;
+                selectedWeapon.isAlive = false
+                this.au_remove.playSound('remove')
             }
             this.draggingHammer = null;
-        })
+        }
+        this.draggingHammer = null;
     }
 }

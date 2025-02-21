@@ -20,10 +20,13 @@ export class Grid {
         this.draggingWeapon = null;
         this.weapons = []
 
+        this.positionX = 0;
+        this.positionY = 0;
+
         this.au_install = new AudioManager()
         this.au_install.loadSound('install', '../audio/install_weapon.mp3')
 
-        this.installWeapon(GameManager.instance);
+        this.handle(GameManager.instance);
 
         this.grid = Array.from({ length: rows }, () => Array(cols).fill(null));
 
@@ -83,71 +86,118 @@ export class Grid {
         context.fillText(`${sun} ☀️`, x, y);
     }
 
-    installWeapon(gameMng) {
-        this.canvas.addEventListener("mousedown", (e) => {
-            const mouseX = e.offsetX;
-            const mouseY = e.offsetY;
+    handle(gameMng) {
+        // destop
+        this.canvas.addEventListener("mousedown", (e) => { this.pickWeapon(e, false) });
+        this.canvas.addEventListener("mousemove", (e) => { this.dragWeapon(e, false) });
+        this.canvas.addEventListener("mouseup", (e) => { this.dropWeapon(e, gameMng, false) })
+        
+        // mobile
+        this.canvas.addEventListener("touchstart", (e) => {
+            this.pickWeapon(e, true)
+        });
+        this.canvas.addEventListener("touchmove", (e) => {
+            this.dragWeapon(e, true)
+        });
+        this.canvas.addEventListener("touchend", (e) => {
+            this.dropWeapon(e, gameMng, true)
+        });
+    }
 
-            const selectedWeapon = this.weaponItems.find(obj => {
-                return (
-                    mouseX >= obj.x &&
-                    mouseX <= obj.x + obj.width &&
-                    mouseY >= obj.y &&
-                    mouseY <= obj.y + obj.height
-                );
-            });
+    getTouchPosition(e) {
+        const touch = e.touches[0] || e.changedTouches[0];
+        const rect = e.target.getBoundingClientRect();
 
-            if (selectedWeapon) {
-                this.draggingWeapon = new Weapon(
-                    mouseX, mouseY,
-                    selectedWeapon.imgSrc,
-                    selectedWeapon.idleSprite, selectedWeapon.shootSprite,
-                    selectedWeapon.level, false,
-                    100, selectedWeapon.sun,
-                    selectedWeapon.atkSpeed, selectedWeapon.damage
-                )
-            }
+        this.positionX = (touch.clientX - rect.left) * (this.canvas.width / rect.width);
+        this.positionY = (touch.clientY - rect.top) * (this.canvas.height / rect.height);
+    }
+
+    pickWeapon(e, touchable) {
+        if (touchable) {
+            // mobile
+            this.getTouchPosition(e)
+        } else {
+            // destop
+            this.positionX = e.offsetX;
+            this.positionY = e.offsetY;
+        }
+
+
+        const selectedWeapon = this.weaponItems.find(obj => {
+            return (
+                this.positionX >= obj.x &&
+                this.positionX <= obj.x + obj.width &&
+                this.positionY >= obj.y &&
+                this.positionY <= obj.y + obj.height
+            );
         });
 
-        this.canvas.addEventListener("mousemove", (e) => {
-            if (this.draggingWeapon) {
+        if (selectedWeapon) {
+            this.draggingWeapon = new Weapon(
+                this.positionX, this.positionY,
+                selectedWeapon.imgSrc,
+                selectedWeapon.idleSprite, selectedWeapon.shootSprite,
+                selectedWeapon.level, false,
+                100, selectedWeapon.sun,
+                selectedWeapon.atkSpeed, selectedWeapon.damage
+            )
+        }
+    }
+
+    dragWeapon(e, touchable) {
+        if (this.draggingWeapon) {
+            if (touchable) {
+                // mobile
+                e.preventDefault()
+                this.getTouchPosition(e)
+                this.draggingWeapon.x = this.positionX - 40;
+                this.draggingWeapon.y = this.positionY - 30;
+            } else {
+                // destop
                 this.draggingWeapon.x = e.offsetX - 40;
                 this.draggingWeapon.y = e.offsetY - 30;
             }
-        });
+        }
+    }
 
-        this.canvas.addEventListener("mouseup", (e) => {
+    dropWeapon(e, gameMng, touchable) {
+        if (this.draggingWeapon && this.draggingWeapon.sun <= gameMng.suns) {
 
-            if (this.draggingWeapon && this.draggingWeapon.sun <= gameMng.suns) {
-                const mouseX = e.offsetX;
-                const mouseY = e.offsetY;
-
-                const col = Math.floor(mouseX / this.cellWidth);
-                const row = Math.floor(mouseY / this.cellHeight);
-
-                if (
-                    row >= 1 && row < this.rows
-                    && col >= 0 && col < this.cols
-                    && !this.grid[row][col]
-                ) {
-                    const centerX = col * this.cellWidth + this.cellWidth / 2 - this.draggingWeapon.width / 2;
-                    const centerY = row * this.cellHeight + this.cellHeight / 2 - this.draggingWeapon.height / 2;
-
-                    this.draggingWeapon.x = centerX;
-                    this.draggingWeapon.y = centerY;
-
-                    this.grid[row][col] = this.draggingWeapon;
-                    this.weapons.push(this.draggingWeapon)
-                    this.draggingWeapon.isInstalled = true
-
-                    gameMng.suns -= this.draggingWeapon.sun
-                    this.au_install.playSound('install')
-                }
-
-                this.draggingWeapon = null;
+            if(touchable) {
+                // mobile
+                e.preventDefault()
+                this.getTouchPosition(e)
+            } else {
+                // destop
+                this.positionX = e.offsetX;
+                this.positionY = e.offsetY;
             }
+
+            const col = Math.floor(this.positionX / this.cellWidth);
+            const row = Math.floor(this.positionY / this.cellHeight);
+
+            if (
+                row >= 1 && row < this.rows
+                && col >= 0 && col < this.cols
+                && !this.grid[row][col]
+            ) {
+                const centerX = col * this.cellWidth + this.cellWidth / 2 - this.draggingWeapon.width / 2;
+                const centerY = row * this.cellHeight + this.cellHeight / 2 - this.draggingWeapon.height / 2;
+
+                this.draggingWeapon.x = centerX;
+                this.draggingWeapon.y = centerY;
+
+                this.grid[row][col] = this.draggingWeapon;
+                this.weapons.push(this.draggingWeapon)
+                this.draggingWeapon.isInstalled = true
+
+                gameMng.suns -= this.draggingWeapon.sun
+                this.au_install.playSound('install')
+            }
+
             this.draggingWeapon = null;
-        })
+        }
+        this.draggingWeapon = null;
     }
 
     clearWeapons() {
