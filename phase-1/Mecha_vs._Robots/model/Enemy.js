@@ -1,5 +1,5 @@
 import RectCollider from "../helper/RectCollider.js";
-import { CollisionManager } from "../helper/CollisionManager.js";
+import { CollisionManager } from "../managers/CollisionManager.js";
 import { Weapon } from "./Weapon.js";
 import { Bullet } from "./Bullet.js";
 import { Grid } from "./Grid.js";
@@ -66,7 +66,7 @@ export class Enemy {
     }
 
     loadImage() {
-        this.image.src = `../img/enemy_1/robot${this.level}/${this.state}.png`;
+        this.image.src = `../asset/img/enemy_1/robot${this.level}/${this.state}.png`;
 
         this.image.onload = () => {
             this.width = this.image.width / this.numberSprites; // Đảm bảo width được gán đúng

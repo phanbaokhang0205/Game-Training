@@ -1,5 +1,5 @@
-import { AudioManager } from "../helper/AudioManager.js";
-import { GameManager } from "../helper/GameManager.js";
+import { AudioManager } from "../managers/AudioManager.js";
+import { GameManager } from "../managers/GameManager.js";
 import { Grid } from "./Grid.js";
 
 export class Hammer {
@@ -18,13 +18,13 @@ export class Hammer {
 
         this.draggingHammer = null;
         this.au_remove = new AudioManager()
-        this.au_remove.loadSound('remove', '../audio/remove_weapon.mp3')
+        this.au_remove.loadSound('remove', '../asset/audio/remove_weapon.mp3')
 
         this.handle()
         this.loadImage();
     }
     loadImage() {
-        this.image.src = '../img/hammer.png';
+        this.image.src = '../asset/img/hammer.png';
         this.image.onload = () => {
             this.width = this.image.width / 3
             this.height = this.image.height / 3

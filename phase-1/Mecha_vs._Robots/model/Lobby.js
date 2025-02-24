@@ -13,7 +13,7 @@ export class Lobby {
         this.weaponItems.forEach(obj => {
             const image = new Image()
             image.src = obj.src;
-            this.context.drawImage(image, obj.x, obj.y + 20, 80, 80);
+            this.context.drawImage(image, obj.x, obj.y, 80, 80);
         });
     }
 

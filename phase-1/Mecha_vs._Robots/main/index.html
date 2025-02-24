@@ -11,11 +11,11 @@
 <body>
     <div class="canvasBox">
         <canvas id="canvas" width="1000" height="700"></canvas>
-        <audio id="bg_music" src="../audio/background_music3.mp3" loop></audio>
+        <audio id="bg_music" src="../asset/audio/background_music3.mp3" loop></audio>
         <!-- Menu game start -->
         <div class="start-menu" id="startMenu">
             <h1>Mecha vs. Monsters</h1>
-            <img src="../img/weapon/weapon1/idle.png" alt="Game Image">
+            <img src="../asset/img/weapon/weapon1/idle.png" alt="Game Image">
             <div class="buttons">
                 <button id="start_game">Start</button>
                 <button>Options</button>
@@ -37,6 +37,16 @@
             <b>Suns: <span id="suns"></span></b>
             <button id="retryButton">Retry</button>
         </div>
+
+        <!-- Menu Win -->
+        <div class="win-menu" id="winMenu">
+            <h2>YOU WIN!</h2>
+            <b>Points: <span id="winPoints">0</span></b><br>
+            <b>Suns: <span id="winSuns">0</span></b><br>
+            <b>Lives: <span id="winLives">0</span></b><br>
+            <button id="winRestartButton">Play again</button>
+        </div>
+
 
         <!-- Icon Menu -->
         <div id="menuIcon">☰</div>

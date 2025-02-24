@@ -1,8 +1,8 @@
 import { Weapon } from "./Weapon.js";
 import { Lobby } from "./Lobby.js";
-import { CollisionManager } from "../helper/CollisionManager.js";
-import { GameManager } from "../helper/GameManager.js";
-import { AudioManager } from "../helper/AudioManager.js";
+import { CollisionManager } from "../managers/CollisionManager.js";
+import { GameManager } from "../managers/GameManager.js";
+import { AudioManager } from "../managers/AudioManager.js";
 
 export class Grid {
     static instance = null
@@ -24,7 +24,7 @@ export class Grid {
         this.positionY = 0;
 
         this.au_install = new AudioManager()
-        this.au_install.loadSound('install', '../audio/install_weapon.mp3')
+        this.au_install.loadSound('install', '../asset/audio/install_weapon.mp3')
 
         this.handle(GameManager.instance);
 
@@ -37,9 +37,9 @@ export class Grid {
     }
 
     createWeaponLobby() {
-        const weapon1 = new Weapon(this.lobby.x - this.lobby.width + 0, 0, "weapon1", 4, 4, 1, false, 100, 10, 2500, 10)
-        const weapon2 = new Weapon(this.lobby.x - this.lobby.width + 200, 0, "weapon2", 6, 6, 2, false, 100, 20, 1250, 10)
-        const weapon3 = new Weapon(this.lobby.x - this.lobby.width + 400, 0, "weapon3", 4, 4, 3, false, 200, 50, 3000, 30)
+        const weapon1 = new Weapon(this.lobby.x - this.lobby.width + 0, 20, "weapon1", 4, 4, 1, false, 100, 10, 2500, 10)
+        const weapon2 = new Weapon(this.lobby.x - this.lobby.width + 200, 20, "weapon2", 6, 6, 2, false, 100, 20, 1250, 10)
+        const weapon3 = new Weapon(this.lobby.x - this.lobby.width + 400, 20, "weapon3", 4, 4, 3, false, 200, 50, 3000, 30)
         this.weaponItems.push(weapon1)
         this.weaponItems.push(weapon2)
         this.weaponItems.push(weapon3)
@@ -71,7 +71,7 @@ export class Grid {
             this.draggingWeapon.draw(this.draggingWeapon._x, this.draggingWeapon._y, this.context)
         }
         this.weaponItems.forEach(w => {
-            this.drawInfo(this.context, w.sun, w.x + 20, w.y + 20)
+            this.drawInfo(this.context, w.sun, w.x + 20, w.y)
         })
 
         this.lobby.drawLobby()
@@ -91,17 +91,11 @@ export class Grid {
         this.canvas.addEventListener("mousedown", (e) => { this.pickWeapon(e, false) });
         this.canvas.addEventListener("mousemove", (e) => { this.dragWeapon(e, false) });
         this.canvas.addEventListener("mouseup", (e) => { this.dropWeapon(e, gameMng, false) })
-        
+
         // mobile
-        this.canvas.addEventListener("touchstart", (e) => {
-            this.pickWeapon(e, true)
-        });
-        this.canvas.addEventListener("touchmove", (e) => {
-            this.dragWeapon(e, true)
-        });
-        this.canvas.addEventListener("touchend", (e) => {
-            this.dropWeapon(e, gameMng, true)
-        });
+        this.canvas.addEventListener("touchstart", (e) => { this.pickWeapon(e, true) });
+        this.canvas.addEventListener("touchmove", (e) => { this.dragWeapon(e, true) });
+        this.canvas.addEventListener("touchend", (e) => { this.dropWeapon(e, gameMng, true) });
     }
 
     getTouchPosition(e) {
@@ -163,7 +157,7 @@ export class Grid {
     dropWeapon(e, gameMng, touchable) {
         if (this.draggingWeapon && this.draggingWeapon.sun <= gameMng.suns) {
 
-            if(touchable) {
+            if (touchable) {
                 // mobile
                 e.preventDefault()
                 this.getTouchPosition(e)

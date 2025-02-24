@@ -1,4 +1,5 @@
-import { EnemyManager } from "../managers/enemyManager.js";
+import { GameManager } from "../managers/GameManager.js";
+import { EnemyManager } from "../managers/EnemyManager.js";
 import LevelManager from "./LevelManager.js";
 
 export default class Level {
@@ -16,11 +17,11 @@ export default class Level {
         EnemyManager.instance.draw(context)
     }
 
-    update() {
+    update(winMenu, winPoints, winSuns, winLives) {
         // Update game logic
         EnemyManager.instance.update()
         if (EnemyManager.instance.checkClearEnemies()) {
-            this.onWon()
+            this.onWon(winMenu, winPoints, winSuns, winLives)
         }
         if (EnemyManager.instance.checkEnemiesReachEnd()) {
             this.onLose()
@@ -40,9 +41,20 @@ export default class Level {
         this.isLoaded = true;
     }
 
-    onWon() {
-        LevelManager.instance.loadNextLevel()
+    onWon(winMenu, winPoints, winSuns, winLives) {
+        LevelManager.instance.loadNextLevel();
+
+        if (LevelManager.instance.currentLevelId > 3) {
+            winMenu.classList.add("show");
+            winPoints.textContent = EnemyManager.instance.enemiesKilled.length;
+            winSuns.textContent = GameManager.instance.suns;
+            winLives.textContent = GameManager.instance.lives;
+            return;         
+        }
+
     }
+
+    
 
     onLose() {
         // Handle level failure

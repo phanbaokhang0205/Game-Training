@@ -1,5 +1,5 @@
-import { CollisionManager } from "../helper/CollisionManager.js";
-import { GameManager } from "../helper/GameManager.js";
+import { CollisionManager } from "./CollisionManager.js";
+import { GameManager } from "./GameManager.js";
 import { Enemy } from "../model/Enemy.js";
 
 export class EnemyManager {

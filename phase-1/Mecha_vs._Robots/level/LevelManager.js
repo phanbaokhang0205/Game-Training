@@ -1,14 +1,13 @@
 import LevelLoader from "./LevelLoader.js";
 import Level from "./Level.js";
-import { EnemyManager } from "../managers/enemyManager.js";
 
 export default class LevelManager {
     static instance = null;
     constructor() {
         LevelManager.instance = this
         this.currentLevel = null;
-        this.levelLoader = new LevelLoader();
         this.currentLevelId = 1
+        this.levelLoader = new LevelLoader();
     }
 
     async loadLevel() {
@@ -19,11 +18,9 @@ export default class LevelManager {
 
         // Load new level data
         const levelData = await this.levelLoader.loadLevel(this.currentLevelId);
-        console.log("Loaded Level Data:", levelData);
 
         // Create and initialize new level
         this.currentLevel = new Level();
-        console.log(this.currentLevel);
         this.currentLevel.init(levelData);
     }
 
@@ -37,7 +34,11 @@ export default class LevelManager {
     }
 
     loadNextLevel() {
-        this.currentLevelId++;
-        this.loadLevel();
+        if (this.currentLevelId > 3) {
+            return;
+        } else {
+            this.currentLevelId++;
+            this.loadLevel();
+        }
     }
 }

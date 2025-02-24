@@ -1,5 +1,5 @@
 import LevelManager from "../level/LevelManager.js";
-import { EnemyManager } from "../managers/enemyManager.js";
+import { EnemyManager } from "./EnemyManager.js";
 import { Grid } from "../model/Grid.js";
 
 export class GameManager {
@@ -7,8 +7,8 @@ export class GameManager {
     constructor() {
         GameManager.instance = this;
         this.score = 0;
-        this.suns = 150;
-        this.state = 'start'; // Possible states: 'playing', 'pause', 'gameOver'
+        this.suns = 130;
+        this.state = 'start'; // Possible states: 'playing', 'pause', 'gameOver', 'gameWin'
         this.lives = 5;
     }
 

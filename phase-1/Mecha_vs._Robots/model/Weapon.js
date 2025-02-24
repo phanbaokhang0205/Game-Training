@@ -1,16 +1,16 @@
 import { Bullet } from "./Bullet.js";
-import { AudioManager } from "../helper/AudioManager.js";
+import { AudioManager } from "../managers/AudioManager.js";
 import RectCollider from "../helper/RectCollider.js";
-import { CollisionManager } from "../helper/CollisionManager.js";
+import { CollisionManager } from "../managers/CollisionManager.js";
 import { Enemy } from "./Enemy.js";
 import { Grid } from "./Grid.js";
-import { GameManager } from "../helper/GameManager.js";
+import { GameManager } from "../managers/GameManager.js";
 
 export class Weapon {
     constructor(x, y, imgSrc, idleSprite, shootSprite, level, isShoot, HP, sun, atkSpeed, damage) {
         this.image = new Image()
         this.imgSrc = imgSrc;
-        this.src = `../img/weapon/${this.imgSrc}/idle_1.png`
+        this.src = `../asset/img/weapon/${this.imgSrc}/idle_1.png`
         this.idleSprite = idleSprite
         this.shootSprite = shootSprite;
         this.state = 'idle'
@@ -40,7 +40,7 @@ export class Weapon {
 
         // audio
         this.au_shooting = new AudioManager()
-        this.au_shooting.loadSound('shooting', '../audio/shooting1.mp3')
+        this.au_shooting.loadSound('shooting', '../asset/audio/shooting1.mp3')
 
         // sprite bullet
         this.bullets = []
@@ -88,10 +88,10 @@ export class Weapon {
 
     loadImage() {
         if (this.state == 'idle') {
-            this.image.src = `../img/weapon/${this.imgSrc}/idle_${this.imageIndex}.png`;
+            this.image.src = `../asset/img/weapon/${this.imgSrc}/idle_${this.imageIndex}.png`;
 
         } else if (this.state == 'shoot') {
-            this.image.src = `../img/weapon/${this.imgSrc}/shoot_${this.imageIndex}.png`;
+            this.image.src = `../asset/img/weapon/${this.imgSrc}/shoot_${this.imageIndex}.png`;
         }
         this.image.onload = () => {
             if (this.level === 1) {
@@ -206,7 +206,6 @@ export class Weapon {
             if (this.isShoot && !this.shootingInterval) {
                 this.shootingInterval = setInterval(() => {
                     this.shooting()
-                    console.log(GameManager.instance.state);
                 }, this.atkSpeed);
             }
 

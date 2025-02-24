@@ -1,8 +1,8 @@
-import { GameManager } from "../helper/GameManager.js";
-import { AudioManager } from "../helper/AudioManager.js";
+import { GameManager } from "../managers/GameManager.js";
+import { AudioManager } from "../managers/AudioManager.js";
 import { Grid } from "../model/Grid.js";
-import { CollisionManager } from "../helper/CollisionManager.js";
-import { EnemyManager } from "../managers/enemyManager.js";
+import { CollisionManager } from "../managers/CollisionManager.js";
+import { EnemyManager } from "../managers/EnemyManager.js";
 import LevelManager from "../level/LevelManager.js";
 import { Hammer } from "../model/Hammer.js";
 import { InputController } from "../helper/InputController.js";
@@ -29,9 +29,10 @@ import { InputController } from "../helper/InputController.js";
  * TODO: 
  * 4. thêm hiệu ứng bullet collide enemey.
  * 8. Khi nhiều enemy tấn công 1 weapon thì làm thế nào để Weapon nhận được tất cả sát thương của các Enemy.
+ * 
+ * --------DONE--------
  * 13. Xử lý khi Win.
  * 14. Menu start game.
- * --------DONE--------
  * 12. Thêm sound:
     * Đặt, tháo Weapon.
     * bullet collide Enemy.
@@ -89,19 +90,24 @@ let suns = document.getElementById("suns");
 let bg_music = document.getElementById("bg_music");
 let volumeSlider = document.getElementById("volumeSlider");
 let startButton = document.getElementById("start_game");
-let startMenu = document.getElementById("startMenu")
+let startMenu = document.getElementById("startMenu");
+
+// win menu
+let winMenu = document.getElementById('winMenu');
+let winRestartButton = document.getElementById('winRestartButton');
+let winLives = document.getElementById('winLives');
+let winSuns = document.getElementById('winSuns');
+let winPoints = document.getElementById('winPoints')
 
 let hammer;
 
 let backgroundImage = new Image();
-backgroundImage.src = '../img/Far_Future_Lawn.jpg';
+backgroundImage.src = '../asset/img/Far_Future_Lawn.jpg';
 
 window.onload = init
 
 async function init() {
     gameManager = new GameManager()
-    colliderManager = new CollisionManager()
-    inputController = new InputController()
 
     // status game
     colliderManager = new CollisionManager()
@@ -117,7 +123,6 @@ async function init() {
     ch = canvas.height
 
 
-
     // grid
     grid = new Grid(6, 9, context, cw, ch)
 
@@ -127,8 +132,6 @@ async function init() {
 
     hammer = new Hammer(cw - 150, 0, context)
 
-    menuIcon = document.getElementById("menuIcon");
-    pauseMenu = document.getElementById("pauseMenu");
 
     // menu
     menuIcon.addEventListener("click", () => {
@@ -142,9 +145,6 @@ async function init() {
     });
 
     // reset_btn    
-    resume_btn = document.getElementById("resumeButton")
-    restartButton = document.getElementById("restartButton")
-
     resume_btn.addEventListener('click', () => {
         gameManager.setState("playing");
         pauseMenu.classList.toggle("show");
@@ -162,16 +162,9 @@ async function init() {
     });
 
     // Gameover menu
-    gameOverMenu = document.getElementById("gameOverMenu");
-    retryButton = document.getElementById("retryButton");
-
     retryButton.addEventListener("click", () => {
         location.reload();
     });
-
-    points = document.getElementById("points");
-    pointsResume = document.getElementById("pointsResume");
-    suns = document.getElementById("suns");
 
     volumeSlider.addEventListener("input", (e) => {
         let volume = parseFloat(e.target.value);
@@ -184,11 +177,16 @@ async function init() {
 
     startButton.addEventListener('click', () => {
         gameManager.setState("playing")
-        console.log(gameManager.state);
         startMenu.style.display = "none";
+        menuIcon.style.display = "block";
+
         bg_music.play();
         requestAnimationFrame(gameLoop);
-    })
+    });
+
+    winRestartButton.addEventListener('click', ()=> {
+        location.reload();
+    });
 
     requestAnimationFrame(gameLoop);
 }
@@ -200,8 +198,9 @@ function update() {
     grid.updateWeapon(enemyMng.enemies);
     if (!levelMng) return;
 
+    
     if (levelMng.currentLevel) {
-        levelMng.currentLevel.update();
+        levelMng.currentLevel.update(winMenu, winPoints, winSuns, winLives);
         gameManager.lives = 5 - enemyMng.enemiesReachEnd.length;
         if (gameManager.lives < 0) gameManager.lives = 0;
     }
@@ -216,9 +215,9 @@ function draw() {
 
     if (levelMng && levelMng.currentLevel) {
         levelMng.currentLevel.draw(context);
-    } else {
-        console.log("Level MNG null");
     }
+
+    
 
     drawHUD(gameManager.suns, gameManager.lives);
 
@@ -247,9 +246,9 @@ function gameLoop() {
     let now = performance.now();
     window.dt = now - lastTime;
     lastTime = now;
-    context.clearRect(0, 0, cw, ch);
     update();
     CollisionManager.instance.checkCollisions();
+    context.clearRect(0, 0, cw, ch);
     draw();
 
     window.requestAnimationFrame(gameLoop);
@@ -260,6 +259,7 @@ function showGameOverMenu() {
     points.textContent = enemyMng.enemiesKilled.length;
     suns.textContent = gameManager.suns;
 }
+
 
 
 

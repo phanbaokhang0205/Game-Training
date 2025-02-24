@@ -1,6 +1,6 @@
-import { AudioManager } from "../helper/AudioManager.js";
-import { CollisionManager } from "../helper/CollisionManager.js";
-import { GameManager } from "../helper/GameManager.js";
+import { AudioManager } from "../managers/AudioManager.js";
+import { CollisionManager } from "../managers/CollisionManager.js";
+import { GameManager } from "../managers/GameManager.js";
 import RectCollider from "../helper/RectCollider.js";
 import { Enemy } from "./Enemy.js";
 import { Weapon } from "./Weapon.js";
@@ -18,7 +18,7 @@ export class Bullet {
         CollisionManager.instance.addCollider(this.collider)
 
         this.au_hitEnemy = new AudioManager()
-        this.au_hitEnemy.loadSound('pipe_hit', '../audio/pipe_hit.mp3')
+        this.au_hitEnemy.loadSound('pipe_hit', '../asset/audio/pipe_hit.mp3')
 
         this.belongTo = belongTo;
         this.damage = damage;
@@ -36,7 +36,7 @@ export class Bullet {
     }
 
     loadImage() {
-        this.image.src = `../img/bullet/${this.belongTo}/bullet${this.imageIndex}.png`;
+        this.image.src = `../asset/img/bullet/${this.belongTo}/bullet${this.imageIndex}.png`;
         this.image.onload = () => {
             if (this.belongTo === 'weapon3') {
                 this.width = this.image.width / 2;
