@@ -223,8 +223,8 @@ function draw() {
 
 }
 
-// window.dt = 0;
-// let lastTime = performance.now();
+window.dt = 0;
+let lastTime = performance.now();
 
 function gameLoop() {
     if (gameManager.state === 'start') {
@@ -242,11 +242,11 @@ function gameLoop() {
         return
     }
 
-    // let now = performance.now();
-    // window.dt = now - lastTime;
-    // lastTime = now;
+    let now = performance.now();
+    window.dt = now - lastTime;
+    lastTime = now;
 
-
+    
     update();
     CollisionManager.instance.checkCollisions();
     context.clearRect(0, 0, cw, ch);
