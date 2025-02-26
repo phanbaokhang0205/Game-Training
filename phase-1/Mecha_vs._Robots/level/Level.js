@@ -1,5 +1,5 @@
 import { GameManager } from "../managers/GameManager.js";
-import { EnemyManager } from "../managers/EnemyManager.js";
+import { EnemyManager } from "../managers/enemyManager.js";
 import LevelManager from "./LevelManager.js";
 
 export default class Level {
@@ -53,8 +53,6 @@ export default class Level {
         }
 
     }
-
-    
 
     onLose() {
         // Handle level failure

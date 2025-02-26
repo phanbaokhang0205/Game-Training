@@ -1,5 +1,5 @@
 import LevelManager from "../level/LevelManager.js";
-import { EnemyManager } from "./EnemyManager.js";
+import { EnemyManager } from "./enemyManager.js";
 import { Grid } from "../model/Grid.js";
 
 export class GameManager {

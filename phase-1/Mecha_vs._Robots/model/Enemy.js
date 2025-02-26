@@ -131,7 +131,7 @@ export class Enemy {
         }
 
         // if (!this.isAttack) {
-        this.x -= this.speed;
+        this.x -= this.speed * window.dt / 1000;
         // }
     }
 

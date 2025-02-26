@@ -2,7 +2,7 @@ import { GameManager } from "../managers/GameManager.js";
 import { AudioManager } from "../managers/AudioManager.js";
 import { Grid } from "../model/Grid.js";
 import { CollisionManager } from "../managers/CollisionManager.js";
-import { EnemyManager } from "../managers/EnemyManager.js";
+import { EnemyManager } from "../managers/enemyManager.js";
 import LevelManager from "../level/LevelManager.js";
 import { Hammer } from "../model/Hammer.js";
 import { InputController } from "../helper/InputController.js";
@@ -223,9 +223,8 @@ function draw() {
 
 }
 
-
-window.dt = 0;
-let lastTime = performance.now();
+// window.dt = 0;
+// let lastTime = performance.now();
 
 function gameLoop() {
     if (gameManager.state === 'start') {
@@ -243,9 +242,11 @@ function gameLoop() {
         return
     }
 
-    let now = performance.now();
-    window.dt = now - lastTime;
-    lastTime = now;
+    // let now = performance.now();
+    // window.dt = now - lastTime;
+    // lastTime = now;
+
+
     update();
     CollisionManager.instance.checkCollisions();
     context.clearRect(0, 0, cw, ch);
@@ -259,8 +260,6 @@ function showGameOverMenu() {
     points.textContent = enemyMng.enemiesKilled.length;
     suns.textContent = gameManager.suns;
 }
-
-
 
 
 function drawHUD(sun, lives) {
