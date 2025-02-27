@@ -83,7 +83,6 @@ export class Bullet {
         if (this.image.complete) {
             context.drawImage(this.image, this.x, this.y, this.width, this.height);
         }
-        this.drawHitBox(context)
     }
 
     drawHitBox(context) {

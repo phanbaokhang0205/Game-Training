@@ -164,7 +164,6 @@ export class Enemy {
         }
 
         this.drawHUD(context)
-        this.drawHitBox(context);
     }
 
     drawHUD(context) {

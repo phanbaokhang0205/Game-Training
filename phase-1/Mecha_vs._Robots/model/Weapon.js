@@ -167,9 +167,6 @@ export class Weapon {
         this.bullets.forEach(bullet => {
             bullet.draw(context)
         });
-
-        this.drawHitBox(context)
-
     }
 
     drawHitBox(context) {
