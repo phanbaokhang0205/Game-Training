@@ -22,7 +22,6 @@ export class Enemy {
         this.bullets = []
 
         this.state = 'Walk'
-        this.isAttack = false;
 
         // number of sprites
         this.walkSprite = walkSprite
@@ -122,17 +121,14 @@ export class Enemy {
             CollisionManager.instance.removeCollider(this.collider)
         }
 
-        if (this.isAttack && this.targetWeapons && !this.targetWeapons.isAlive) {
+        if (this.targetWeapons && !this.targetWeapons.isAlive) {
             this.targetWeapons = null;
-            this.isAttack = false;
             this.state = 'Walk';
             this.speed = this.baseSpeed;
             this.loadImage();
         }
 
-        // if (!this.isAttack) {
         this.x -= this.speed * window.dt / 1000;
-        // }
     }
 
     onCollision(otherCollider) {
@@ -147,7 +143,6 @@ export class Enemy {
             }
 
         } else if (otherCollider.owner instanceof Weapon) {
-            this.isAttack = true;
             this.state = 'attack';
             this.speed = 0;
             this.targetWeapons = otherCollider.owner;
@@ -180,7 +175,7 @@ export class Enemy {
 
     drawHitBox(context) {
         context.beginPath();
-        context.strokeStyle = this.color;
+        context.strokeStyle = "red";
         context.strokeRect(
             this.x,
             this.y,

@@ -198,9 +198,11 @@ function update() {
     grid.updateWeapon(enemyMng.enemies);
     if (!levelMng) return;
 
+    gameManager.onWon(winMenu, winPoints, winSuns, winLives)
     
     if (levelMng.currentLevel) {
-        levelMng.currentLevel.update(winMenu, winPoints, winSuns, winLives);
+        levelMng.currentLevel.update();
+        // levelMng.currentLevel.update(winMenu, winPoints, winSuns, winLives);
         gameManager.lives = 5 - enemyMng.enemiesReachEnd.length;
         if (gameManager.lives < 0) gameManager.lives = 0;
     }

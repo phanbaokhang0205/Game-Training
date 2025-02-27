@@ -37,7 +37,7 @@ export class Grid {
     }
 
     createWeaponLobby() {
-        const weapon1 = new Weapon(this.lobby.x - this.lobby.width + 0, 20, "weapon1", 4, 4, 1, false, 100, 10, 2500, 10)
+        const weapon1 = new Weapon(this.lobby.x - this.lobby.width + 0, 20, "weapon1", 4, 4, 1, false, 100, 10, 2500, 100)
         const weapon2 = new Weapon(this.lobby.x - this.lobby.width + 200, 20, "weapon2", 6, 6, 2, false, 100, 20, 1250, 10)
         const weapon3 = new Weapon(this.lobby.x - this.lobby.width + 400, 20, "weapon3", 4, 4, 3, false, 200, 50, 3000, 30)
         this.weaponItems.push(weapon1)

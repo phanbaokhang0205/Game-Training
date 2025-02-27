@@ -168,11 +168,13 @@ export class Weapon {
             bullet.draw(context)
         });
 
+        this.drawHitBox(context)
+
     }
 
     drawHitBox(context) {
         context.beginPath();
-        context.strokeStyle = 'blue';
+        context.strokeStyle = 'green';
         context.strokeRect(this.x, this.y, this.width, this.height);
         context.stroke();
     }

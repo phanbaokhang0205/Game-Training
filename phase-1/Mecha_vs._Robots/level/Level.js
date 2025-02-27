@@ -17,11 +17,11 @@ export default class Level {
         EnemyManager.instance.draw(context)
     }
 
-    update(winMenu, winPoints, winSuns, winLives) {
+    update() {
         // Update game logic
         EnemyManager.instance.update()
         if (EnemyManager.instance.checkClearEnemies()) {
-            this.onWon(winMenu, winPoints, winSuns, winLives)
+            LevelManager.instance.loadNextLevel();
         }
         if (EnemyManager.instance.checkEnemiesReachEnd()) {
             this.onLose()
@@ -40,18 +40,9 @@ export default class Level {
     onLoaded() {
         this.isLoaded = true;
     }
-
-    onWon(winMenu, winPoints, winSuns, winLives) {
+    
+    onWon() {
         LevelManager.instance.loadNextLevel();
-
-        if (LevelManager.instance.currentLevelId > 3) {
-            winMenu.classList.add("show");
-            winPoints.textContent = EnemyManager.instance.enemiesKilled.length;
-            winSuns.textContent = GameManager.instance.suns;
-            winLives.textContent = GameManager.instance.lives;
-            return;         
-        }
-
     }
 
     onLose() {

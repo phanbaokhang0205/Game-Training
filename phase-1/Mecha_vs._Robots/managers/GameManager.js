@@ -33,6 +33,16 @@ export class GameManager {
         this.state = 'playing';
     }
 
+    onWon(winMenu, winPoints, winSuns, winLives) {
+        if (LevelManager.instance.currentLevelId > 3 && EnemyManager.instance.checkClearEnemies()) {
+            winMenu.classList.add("show");
+            winPoints.textContent = EnemyManager.instance.enemiesKilled.length;
+            winSuns.textContent = GameManager.instance.suns;
+            winLives.textContent = GameManager.instance.lives;
+            return;
+        }
+    }
+
 }
 
 
